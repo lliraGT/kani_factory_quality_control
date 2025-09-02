@@ -1,0 +1,34 @@
+/* Signature Widget Styling */
+.o_field_signature {
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    min-height: 150px;
+    background-color: #fafafa;
+}
+
+.o_field_signature canvas {
+    border: 1px dashed #6c757d;
+    border-radius: 5px;
+    background-color: white;
+}
+
+.o_field_signature .o_signature_clear {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    margin-top: 5px;
+}
+
+.o_field_signature .o_signature_clear:hover {
+    background-color: #c82333;
+}
+
+/* Signature sections styling */
+.signature-section {
+    padding: 15px;
+    margin: 10px 0;
+    border-left: 4px solid #28a745;
+    background-color: #f8f9fa;
+}

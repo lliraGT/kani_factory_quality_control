@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Single Control Template -->
+    <template id="report_quality_control_cleaning_single_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <style>
+                            .header-table {
+                                width: 100%;
+                                border-collapse: collapse;
+                                margin-bottom: 20px;
+                            }
+                            .header-table td {
+                                border: 2px solid #000;
+                                padding: 8px;
+                                vertical-align: top;
+                            }
+                            .logo-cell {
+                                width: 15%;
+                                text-align: center;
+                                background-color: white !important;
+                            }
+                            .title-cell {
+                                width: 70%;
+                                text-align: center;
+                                font-weight: bold;
+                                font-size: 14px;
+                            }
+                            .info-cell {
+                                width: 15%;
+                                background-color: #e8e8e8;
+                                font-size: 11px;
+                            }
+                            .control-table {
+                                width: 100%;
+                                border-collapse: collapse;
+                                margin-top: 20px;
+                                font-size: 11px;
+                            }
+                            .control-table th, .control-table td {
+                                border: 1px solid #000;
+                                padding: 4px;
+                                text-align: center;
+                            }
+                            .control-table th {
+                                background-color: #90EE90;
+                                font-weight: bold;
+                            }
+                            .signature-table {
+                                width: 100%;
+                                margin-top: 30px;
+                                border-collapse: collapse;
+                            }
+                            .signature-table td {
+                                border: 1px solid #000;
+                                padding: 10px;
+                                height: 80px;
+                                vertical-align: top;
+                            }
+                            .signature-header {
+                                background-color: #90EE90;
+                                font-weight: bold;
+                                text-align: center;
+                            }
+                            .checkbox {
+                                width: 12px;
+                                height: 12px;
+                                border: 1px solid #000;
+                                display: inline-block;
+                                text-align: center;
+                                line-height: 12px;
+                                font-size: 10px;
+                            }
+                            .checkbox-checked {
+                                background-color: #000;
+                                color: white;
+                            }
+                        </style>
+
+                        <!-- Header Table -->
+                        <table class="header-table">
+                            <tr>
+                                <td class="logo-cell">
+                                    <img src="/kani_factory_quality_control/static/src/img/kani_logo.png" 
+                                         alt="KANI" style="max-height: 70px;"/>
+                                </td>
+                                <td class="title-cell">
+                                    CONTROL DE LIMPIEZA DE CUARTO<br/>
+                                    REFRIGERADO Y PALLETS
+                                </td>
+                                <td class="info-cell">
+                                    <div style="text-align: right;">
+                                        <strong>Control N°:</strong><br/>
+                                        <span style="font-size: 14px; color: #64b9b0;" t-field="doc.name"/><br/><br/>
+                                        <strong>Responsable:</strong><br/>
+                                        <span t-field="doc.responsible_id.name"/><br/><br/>
+                                        <strong>Supervisión:</strong><br/>
+                                        <span t-field="doc.supervisor_id.name"/>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Control Table - Only one row with data, no empty rows -->
+                        <table class="control-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 15%;">Fecha de Limpieza</th>
+                                    <th style="width: 10%;">Sí Cumple</th>
+                                    <th style="width: 10%;">No Cumple</th>
+                                    <th style="width: 15%;">Llamada de Atención</th>
+                                    <th style="width: 50%;">Observaciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Single row with the day's control data -->
+                                <tr>
+                                    <td>
+                                        <span t-field="doc.control_date"/>
+                                    </td>
+                                    <td>
+                                        <span class="checkbox" t-att-class="'checkbox-checked' if doc.is_compliant else 'checkbox'">
+                                            <t t-if="doc.is_compliant">✓</t>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="checkbox" t-att-class="'checkbox-checked' if not doc.is_compliant else 'checkbox'">
+                                            <t t-if="not doc.is_compliant">✓</t>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="checkbox" t-att-class="'checkbox-checked' if doc.attention_required else 'checkbox'">
+                                            <t t-if="doc.attention_required">✓</t>
+                                        </span>
+                                    </td>
+                                    <td style="text-align: left;">
+                                        <span t-field="doc.notes"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Signatures Section -->
+                        <table class="signature-table">
+                            <tr>
+                                <td class="signature-header" style="width: 50%;">
+                                    Responsable<br/>
+                                    Asistente de Cocina
+                                </td>
+                                <td class="signature-header" style="width: 50%;">
+                                    Supervisión<br/>
+                                    Supervisor de Cocina y Deshidratados
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="height: 100px; vertical-align: bottom;">
+                                    <t t-if="doc.responsible_signature">
+                                        <img t-att-src="image_data_uri(doc.responsible_signature)" 
+                                             style="max-width: 200px; max-height: 80px;"/>
+                                    </t>
+                                    <div style="border-top: 1px solid #000; margin-top: 50px; text-align: center; padding-top: 5px;">
+                                        <strong><span t-field="doc.responsible_id.name"/></strong><br/>
+                                        Fecha: <span t-field="doc.control_date"/>
+                                    </div>
+                                </td>
+                                <td style="height: 100px; vertical-align: bottom;">
+                                    <t t-if="doc.supervisor_signature">
+                                        <img t-att-src="image_data_uri(doc.supervisor_signature)" 
+                                             style="max-width: 200px; max-height: 80px;"/>
+                                    </t>
+                                    <div style="border-top: 1px solid #000; margin-top: 50px; text-align: center; padding-top: 5px;">
+                                        <strong><span t-field="doc.supervisor_id.name"/></strong><br/>
+                                        Fecha: <span t-field="doc.control_date"/>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- General Notes Section -->
+                        <t t-if="doc.notes">
+                            <div style="margin-top: 20px; border: 1px solid #000; padding: 10px;">
+                                <strong>Observaciones Generales:</strong><br/>
+                                <span t-field="doc.notes"/>
+                            </div>
+                        </t>
+
+                        <!-- Footer with control info -->
+                        <div style="margin-top: 30px; font-size: 10px; text-align: center;">
+                            <strong>Control N°: <span t-field="doc.name"/></strong> | 
+                            Fecha de Creación: <span t-field="doc.create_date" t-options="{'widget': 'datetime'}"/> | 
+                            Estado: <span t-field="doc.state"/>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <!-- Multiple Controls Template -->
+    <template id="report_quality_control_cleaning_multiple_template">
+        <t t-call="web.html_container">
+            <div class="page">
+                <style>
+                    .header-table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-bottom: 20px;
+                    }
+                    .header-table td {
+                        border: 2px solid #000;
+                        padding: 8px;
+                        vertical-align: middle;
+                    }
+                    .logo-cell {
+                        width: 15%;
+                        text-align: center;
+                        background-color: white !important;
+                    }
+                    .title-cell {
+                        width: 85%;
+                        text-align: center;
+                        font-weight: bold;
+                        font-size: 16px;
+                    }
+                    .controls-table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-top: 20px;
+                        font-size: 10px;
+                    }
+                    .controls-table th, .controls-table td {
+                        border: 1px solid #000;
+                        padding: 3px;
+                        text-align: center;
+                    }
+                    .controls-table th {
+                        background-color: #90EE90;
+                        font-weight: bold;
+                    }
+                    .checkbox-small {
+                        width: 10px;
+                        height: 10px;
+                        border: 1px solid #000;
+                        display: inline-block;
+                        text-align: center;
+                        line-height: 10px;
+                        font-size: 8px;
+                    }
+                    .checkbox-checked-small {
+                        background-color: #000;
+                        color: white;
+                    }
+                    .signature-section {
+                        margin-top: 40px;
+                        border: 2px solid #000;
+                        padding: 15px;
+                    }
+                </style>
+
+                <!-- Header -->
+                <table class="header-table">
+                    <tr>
+                        <td class="logo-cell">
+                            <img src="/kani_factory_quality_control/static/src/img/kani_logo.png" 
+                                 alt="KANI" style="max-height: 70px;"/>
+                        </td>
+                        <td class="title-cell">
+                            REPORTE MÚLTIPLE - CONTROL DE LIMPIEZA DE CUARTO REFRIGERADO Y PALLETS
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- Multiple Controls Table -->
+                <table class="controls-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 12%;">Control N°</th>
+                            <th style="width: 12%;">Fecha</th>
+                            <th style="width: 18%;">Responsable</th>
+                            <th style="width: 18%;">Supervisor</th>
+                            <th style="width: 8%;">Sí Cumple</th>
+                            <th style="width: 8%;">No Cumple</th>
+                            <th style="width: 8%;">Atención</th>
+                            <th style="width: 16%;">Observaciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="docs" t-as="doc">
+                            <tr>
+                                <td><span t-field="doc.name"/></td>
+                                <td><span t-field="doc.control_date"/></td>
+                                <td style="font-size: 9px;"><span t-field="doc.responsible_id.name"/></td>
+                                <td style="font-size: 9px;"><span t-field="doc.supervisor_id.name"/></td>
+                                <td>
+                                    <span class="checkbox-small" t-att-class="'checkbox-checked-small' if doc.is_compliant else 'checkbox-small'">
+                                        <t t-if="doc.is_compliant">✓</t>
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="checkbox-small" t-att-class="'checkbox-checked-small' if not doc.is_compliant else 'checkbox-small'">
+                                        <t t-if="not doc.is_compliant">✓</t>
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="checkbox-small" t-att-class="'checkbox-checked-small' if doc.attention_required else 'checkbox-small'">
+                                        <t t-if="doc.attention_required">✓</t>
+                                    </span>
+                                </td>
+                                <td style="text-align: left; font-size: 8px;">
+                                    <span t-field="doc.notes"/>
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+
+                <!-- Supervisor Signature Section for Live Signing -->
+                <div class="signature-section">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <strong>VALIDACIÓN DE SUPERVISOR EN PRESENCIA DE AUDITORES</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <div style="width: 45%; text-align: center;">
+                            <div style="border: 1px solid #000; height: 80px; margin-bottom: 10px;">
+                                <!-- Empty space for live signature -->
+                            </div>
+                            <strong>Firma del Supervisor</strong><br/>
+                            Supervisor de Cocina y Deshidratados
+                        </div>
+                        <div style="width: 45%; text-align: center;">
+                            <div style="border: 1px solid #000; height: 80px; margin-bottom: 10px;">
+                                <!-- Empty space for auditor signature -->
+                            </div>
+                            <strong>Firma del Auditor</strong><br/>
+                            Fecha: _______________
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div style="margin-top: 30px; font-size: 10px; text-align: center;">
+                    Reporte generado: <t t-esc="datetime.datetime.now().strftime('%d/%m/%Y %H:%M')"/> | 
+                    Total de controles: <t t-esc="len(docs)"/>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

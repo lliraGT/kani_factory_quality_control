@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Main Menu -->
+    <menuitem id="menu_quality_control_main"
+              name="Control de Calidad"
+              sequence="50"
+              web_icon="factory_quality_control,static/description/icon.png"/>
+
+    <!-- Sub Menu -->
+    <menuitem id="menu_quality_control_cleaning"
+              name="Control de Limpieza"
+              parent="menu_quality_control_main"
+              sequence="10"/>
+
+    <!-- Menu Item -->
+    <menuitem id="menu_quality_control_cleaning_room"
+              name="Cuarto Refrigerado y Pallets"
+              parent="menu_quality_control_cleaning"
+              action="action_quality_control_cleaning_room"
+              sequence="10"/>
+
+    <!-- Reports Menu -->
+    <menuitem id="menu_quality_control_reports"
+              name="Reportes"
+              parent="menu_quality_control_main"
+              sequence="90"/>
+</odoo>
