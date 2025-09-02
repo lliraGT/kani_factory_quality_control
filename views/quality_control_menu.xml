@@ -2,7 +2,7 @@
 <odoo>
     <!-- Main Menu -->
     <menuitem id="menu_quality_control_main"
-              name="Control de Calidad"
+              name="KANI - Controles"
               sequence="50"
               web_icon="factory_quality_control,static/description/icon.png"/>
 
