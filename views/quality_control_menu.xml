@@ -4,19 +4,53 @@
     <menuitem id="menu_quality_control_main"
               name="KANI - Controles"
               sequence="50"
-              web_icon="factory_quality_control,static/description/icon.png"/>
+              web_icon="kani_factory_quality_control,static/src/img/kani_logo.png"/>
 
-    <!-- Sub Menu -->
+    <!-- Dashboard Menu -->
+    <menuitem id="menu_quality_control_dashboard"
+              name="Panel de Control"
+              parent="menu_quality_control_main"
+              action="action_quality_control_recurring_task_dashboard"
+              sequence="5"/>
+
+    <!-- My Tasks Menu -->
+    <menuitem id="menu_my_quality_control_tasks"
+              name="Mis Tareas"
+              parent="menu_quality_control_main"
+              action="action_my_quality_control_activities"
+              sequence="7"/>
+
+    <!-- Sub Menu - Controls -->
     <menuitem id="menu_quality_control_cleaning"
               name="Control de Limpieza"
               parent="menu_quality_control_main"
               sequence="10"/>
 
-    <!-- Menu Item -->
+    <!-- Menu Item - Cleaning Room Control -->
     <menuitem id="menu_quality_control_cleaning_room"
-              name="Cuarto Refrigerado y Pallets"
+              name="Cuarto Refrigerado y Palets"
               parent="menu_quality_control_cleaning"
               action="action_quality_control_cleaning_room"
+              sequence="10"/>
+
+    <!-- Menu Item - Vegetable Pallet Cleaning Control -->
+    <menuitem id="menu_quality_control_vegetable_pallet_cleaning"
+              name="Palets de Verdura"
+              parent="menu_quality_control_cleaning"
+              action="action_quality_control_vegetable_pallet_cleaning"
+              sequence="20"/>
+
+    <!-- Sub Menu - Configuration -->
+    <menuitem id="menu_quality_control_configuration"
+              name="Configuración"
+              parent="menu_quality_control_main"
+              sequence="80"/>
+
+    <!-- Menu Item - Recurring Tasks Configuration -->
+    <menuitem id="menu_quality_control_recurring_tasks"
+              name="Tareas Recurrentes"
+              parent="menu_quality_control_configuration"
+              action="action_quality_control_recurring_task"
               sequence="10"/>
 
     <!-- Reports Menu -->

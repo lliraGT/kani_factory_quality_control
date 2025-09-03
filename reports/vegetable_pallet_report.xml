@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Single Vegetable Pallet Control Report Definition -->
+    <record id="action_report_quality_control_vegetable_pallet_single" model="ir.actions.report">
+        <field name="name">Control Individual - Palets de Verdura</field>
+        <field name="model">quality.control.vegetable.pallet.cleaning</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">kani_factory_quality_control.report_quality_control_vegetable_pallet_single_template</field>
+        <field name="report_file">kani_factory_quality_control.report_quality_control_vegetable_pallet_single_template</field>
+        <field name="binding_model_id" ref="model_quality_control_vegetable_pallet_cleaning"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'Control_Palets_Verdura_%s' % (object.name)</field>
+    </record>
+
+    <!-- Multiple Vegetable Pallet Controls Report Definition -->
+    <record id="action_report_quality_control_vegetable_pallet_multiple" model="ir.actions.report">
+        <field name="name">Controles Múltiples - Palets de Verdura</field>
+        <field name="model">quality.control.vegetable.pallet.cleaning</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">kani_factory_quality_control.report_quality_control_vegetable_pallet_multiple_template</field>
+        <field name="report_file">kani_factory_quality_control.report_quality_control_vegetable_pallet_multiple_template</field>
+        <field name="binding_model_id" ref="model_quality_control_vegetable_pallet_cleaning"/>
+        <field name="binding_type">report</field>
+        <field name="multi">True</field>
+        <field name="print_report_name">'Controles_Palets_Verdura_%s' % (datetime.now().strftime('%Y%m%d'))</field>
+    </record>
+</odoo>

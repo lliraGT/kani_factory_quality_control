@@ -1,3 +1,7 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_quality_control_cleaning_room_user,quality.control.cleaning.room user,model_quality_control_cleaning_room,base.group_user,1,1,1,0
 access_quality_control_cleaning_room_manager,quality.control.cleaning.room manager,model_quality_control_cleaning_room,base.group_system,1,1,1,1
+access_quality_control_vegetable_pallet_cleaning_user,quality.control.vegetable.pallet.cleaning user,model_quality_control_vegetable_pallet_cleaning,base.group_user,1,1,1,0
+access_quality_control_vegetable_pallet_cleaning_manager,quality.control.vegetable.pallet.cleaning manager,model_quality_control_vegetable_pallet_cleaning,base.group_system,1,1,1,1
+access_quality_control_recurring_task_user,quality.control.recurring.task user,model_quality_control_recurring_task,base.group_user,1,0,0,0
+access_quality_control_recurring_task_manager,quality.control.recurring.task manager,model_quality_control_recurring_task,base.group_system,1,1,1,1

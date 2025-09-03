@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Single Control Template -->
-    <template id="report_quality_control_cleaning_single_template">
+    <!-- Single Vegetable Pallet Control Template -->
+    <template id="report_quality_control_vegetable_pallet_single_template">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="doc">
                 <t t-call="web.external_layout">
@@ -87,8 +87,8 @@
                                          alt="KANI" style="max-height: 70px;"/>
                                 </td>
                                 <td class="title-cell">
-                                    CONTROL DE LIMPIEZA DE CUARTO<br/>
-                                    REFRIGERADO Y PALLETS
+                                    CONTROL DE LIMPIEZA DE<br/>
+                                    PALETS DE VERDURA
                                 </td>
                                 <td class="info-cell">
                                     <div style="text-align: right;">
@@ -197,8 +197,8 @@
         </t>
     </template>
 
-    <!-- Multiple Controls Template -->
-    <template id="report_quality_control_cleaning_multiple_template">
+    <!-- Multiple Vegetable Pallet Controls Template -->
+    <template id="report_quality_control_vegetable_pallet_multiple_template">
         <t t-call="web.html_container">
             <t t-call="web.external_layout">
                 <div class="page">
@@ -259,7 +259,7 @@
                         }
                     </style>
 
-                    <!-- Header Table - Same as individual report -->
+                    <!-- Header Table -->
                     <table class="header-table">
                         <tr>
                             <td class="logo-cell">
@@ -267,7 +267,7 @@
                                      alt="KANI" style="max-height: 70px;"/>
                             </td>
                             <td class="title-cell">
-                                REPORTE MULTIPLE - CONTROL DE LIMPIEZA DE CUARTO REFRIGERADO Y PALLETS
+                                REPORTE MULTIPLE - CONTROL DE LIMPIEZA DE PALETS DE VERDURA
                             </td>
                         </tr>
                     </table>

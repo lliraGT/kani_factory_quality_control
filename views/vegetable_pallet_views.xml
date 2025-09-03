@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="view_quality_control_vegetable_pallet_cleaning_tree" model="ir.ui.view">
+        <field name="name">quality.control.vegetable.pallet.cleaning.tree</field>
+        <field name="model">quality.control.vegetable.pallet.cleaning</field>
+        <field name="arch" type="xml">
+            <tree string="Control de Limpieza de Palets de Verdura">
+                <field name="name"/>
+                <field name="control_date"/>
+                <field name="responsible_id"/>
+                <field name="is_compliant" widget="boolean_toggle" string="Cumple"/>
+                <field name="attention_required" widget="boolean" string="Atención"/>
+                <field name="state" decoration-info="state=='draft'" decoration-warning="state=='in_progress'" decoration-success="state in ['completed','validated']"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_quality_control_vegetable_pallet_cleaning_form" model="ir.ui.view">
+        <field name="name">quality.control.vegetable.pallet.cleaning.form</field>
+        <field name="model">quality.control.vegetable.pallet.cleaning</field>
+        <field name="arch" type="xml">
+            <form string="Control de Limpieza de Palets de Verdura">
+                <header>
+                    <button name="action_start_control" string="Iniciar Control" type="object" 
+                            invisible="state != 'draft'" class="oe_highlight"/>
+                    <button name="action_complete_control" string="Completar Control" type="object" 
+                            invisible="state != 'in_progress'" class="oe_highlight"/>
+                    <button name="action_validate_control" string="Validar Control" type="object" 
+                            invisible="state != 'completed'" class="oe_highlight"/>
+                    <button name="action_reset_to_draft" string="Resetear a Borrador" type="object" 
+                            invisible="state not in ['in_progress', 'completed']" groups="base.group_system"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,completed,validated"/>
+                </header>
+                
+                <sheet>
+                    <!-- Header with KANI logo and improved layout -->
+                    <div class="oe_title">
+                        <div class="row align-items-center">
+                            <div class="col-2 text-left">
+                                <img src="/kani_factory_quality_control/static/src/img/kani_logo.png" 
+                                     alt="KANI" style="max-height: 80px;" class="img-fluid"/>
+                            </div>
+                            <div class="col-8 text-center">
+                                <h2 style="margin: 0; font-weight: bold;">CONTROL DE LIMPIEZA DE PALETS DE VERDURA</h2>
+                            </div>
+                            <div class="col-2 text-right">
+                                <div style="text-align: right;">
+                                    <span class="o_form_label">Control Number:</span>
+                                    <h3 style="margin: 0; color: #64b9b0;"><field name="name" readonly="1"/></h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group string="Información General">
+                            <field name="control_date" required="1"/>
+                        </group>
+                        <group string="Personal">
+                            <field name="responsible_id" required="1" options="{'no_create': True}"/>
+                            <field name="supervisor_id" required="1" options="{'no_create': True}"/>
+                        </group>
+                    </group>
+
+                    <!-- Control Fields directly in form -->
+                    <group string="Control de Limpieza">
+                        <field name="is_compliant" widget="boolean_toggle" string="Control Cumple"/>
+                        <field name="attention_required" string="⚠ Llamada de Atención"/>
+                    </group>
+
+                    <!-- Add spacing before tabs -->
+                    <div style="margin-top: 30px;"></div>
+
+                    <notebook>
+                        <page string="Firmas Digitales" name="signatures">
+                            <group>
+                                <group string="Firma del Responsable - Asistente de Cocina">
+                                    <field name="responsible_signature" widget="signature"/>
+                                </group>
+                                <group string="Firma del Supervisor - Supervisor de Cocina y Deshidratados">
+                                    <field name="supervisor_signature" widget="signature"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Observaciones Generales" name="notes">
+                            <field name="notes" placeholder="Ingrese observaciones generales adicionales sobre el control de limpieza de palets de verdura..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_quality_control_vegetable_pallet_cleaning_search" model="ir.ui.view">
+        <field name="name">quality.control.vegetable.pallet.cleaning.search</field>
+        <field name="model">quality.control.vegetable.pallet.cleaning</field>
+        <field name="arch" type="xml">
+            <search string="Buscar Controles de Limpieza de Palets de Verdura">
+                <field name="name" string="Número"/>
+                <field name="responsible_id" string="Responsable"/>
+                <field name="supervisor_id" string="Supervisor"/>
+                <field name="control_date" string="Fecha"/>
+                
+                <filter string="Mis Controles" name="my_controls" domain="[('responsible_id', '=', uid)]"/>
+                <filter string="Por Supervisar" name="to_supervise" domain="[('supervisor_id', '=', uid), ('state', 'in', ['completed'])]"/>
+                <filter string="Hoy" name="today" domain="[('control_date', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter string="Esta Semana" name="this_week" 
+                        domain="[('control_date', '&gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                
+                <separator/>
+                <filter string="Borrador" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="En Progreso" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
+                <filter string="Completado" name="completed" domain="[('state', '=', 'completed')]"/>
+                <filter string="Validado" name="validated" domain="[('state', '=', 'validated')]"/>
+                
+                <group expand="0" string="Agrupar Por">
+                    <filter string="Estado" name="group_by_state" context="{'group_by': 'state'}"/>
+                    <filter string="Responsable" name="group_by_responsible" context="{'group_by': 'responsible_id'}"/>
+                    <filter string="Fecha" name="group_by_date" context="{'group_by': 'control_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_quality_control_vegetable_pallet_cleaning" model="ir.actions.act_window">
+        <field name="name">Control de Limpieza Palets de Verdura</field>
+        <field name="res_model">quality.control.vegetable.pallet.cleaning</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                ¡Crear tu primer control de limpieza de palets de verdura!
+            </p>
+            <p>
+                Aquí puedes gestionar todos los controles de limpieza de palets de verdura.
+                Cada control incluye firmas digitales y genera reportes PDF para auditorías.
+            </p>
+        </field>
+    </record>
+</odoo>

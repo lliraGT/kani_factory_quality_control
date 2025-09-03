@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="view_quality_control_recurring_task_tree" model="ir.ui.view">
+        <field name="name">quality.control.recurring.task.tree</field>
+        <field name="model">quality.control.recurring.task</field>
+        <field name="arch" type="xml">
+            <tree string="Configuración de Tareas Recurrentes">
+                <field name="name"/>
+                <field name="task_type"/>
+                <field name="recurrence_type"/>
+                <field name="weekday" optional="hide" invisible="recurrence_type != 'weekly'"/>
+                <field name="day_of_month" optional="hide" invisible="recurrence_type != 'monthly'"/>
+                <field name="assigned_user_ids" widget="many2many_tags"/>
+                <field name="start_date"/>
+                <field name="last_generated_date"/>
+                <field name="total_tasks_generated"/>
+                <field name="active" widget="boolean_toggle"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_quality_control_recurring_task_form" model="ir.ui.view">
+        <field name="name">quality.control.recurring.task.form</field>
+        <field name="model">quality.control.recurring.task</field>
+        <field name="arch" type="xml">
+            <form string="Configuración de Tarea Recurrente">
+                <header>
+                    <button name="action_generate_tasks_now" string="Generar Tareas Ahora" 
+                            type="object" class="oe_highlight" 
+                            invisible="not active"/>
+                    <button name="action_view_generated_activities" string="Ver Tareas Generadas" 
+                            type="object" class="oe_highlight"/>
+                    <button name="action_reset_generation_status" string="Reiniciar Estado" 
+                            type="object" 
+                            invisible="not active or not last_generated_date"
+                            groups="base.group_system"
+                            confirm="¿Estás seguro de reiniciar el estado de generación? Esto permitirá generar tareas desde la fecha de inicio nuevamente."/>
+                    <field name="active" widget="boolean_button" 
+                           options="{'terminology': {'string_true': 'Activo', 'string_false': 'Inactivo'}}"/>
+                </header>
+                
+                <sheet>
+                    <div class="oe_title">
+                        <div class="row align-items-center">
+                            <div class="col-2 text-left">
+                                <i class="fa fa-clock-o fa-3x text-primary"></i>
+                            </div>
+                            <div class="col-10">
+                                <h1>
+                                    <field name="name" placeholder="ej: Control Diario de Limpieza"/>
+                                </h1>
+                                <div class="o_row">
+                                    <field name="description" placeholder="Descripción opcional de la configuración..."/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group string="Configuración del Control">
+                            <field name="task_type" required="1"/>
+                        </group>
+                        <group string="Estadísticas" invisible="not id">
+                            <field name="total_tasks_generated" readonly="1"/>
+                            <field name="last_generated_date" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="Configuración de Recurrencia">
+                            <field name="recurrence_type" required="1"/>
+                            <field name="weekday" required="recurrence_type == 'weekly'" 
+                                   invisible="recurrence_type != 'weekly'"/>
+                            <field name="day_of_month" required="recurrence_type == 'monthly'" 
+                                   invisible="recurrence_type != 'monthly'"/>
+                            <field name="reminder_time" widget="float_time"/>
+                        </group>
+                        
+                        <group string="Fechas">
+                            <field name="start_date" required="1"/>
+                            <field name="end_date"/>
+                            <field name="days_before_due" 
+                                   help="Días antes de la fecha objetivo para crear la tarea (0 = mismo día)"/>
+                            <field name="days_to_generate_ahead" 
+                                   help="Al generar manualmente, cuántos días hacia el futuro crear tareas"/>
+                        </group>
+                    </group>
+
+                    <group string="Usuarios Asignados">
+                        <field name="assigned_user_ids" widget="many2many_tags" 
+                               options="{'color_field': 'color', 'no_create_edit': True}"
+                               required="1" nolabel="1"/>
+                    </group>
+
+                    <notebook>
+                        <page string="Plantillas de Tareas" name="templates">
+                            <group>
+                                <group string="Plantilla de Título">
+                                    <field name="task_title_template" required="1" nolabel="1"/>
+                                    <div class="text-muted">
+                                        Utilice {date} para incluir la fecha automáticamente
+                                    </div>
+                                </group>
+                                <group string="Vista Previa">
+                                    <div class="alert alert-info">
+                                        <strong>Ejemplo de título:</strong><br/>
+                                        Control de Limpieza - 15/03/2024
+                                    </div>
+                                </group>
+                            </group>
+                            
+                            <group>
+                                <group string="Plantilla de Descripción">
+                                    <field name="task_description_template" nolabel="1"/>
+                                    <div class="text-muted">
+                                        Utilice {date} para incluir la fecha automáticamente
+                                    </div>
+                                </group>
+                                <group string="Vista Previa">
+                                    <div class="alert alert-info">
+                                        <strong>Ejemplo de descripción:</strong><br/>
+                                        Recordatorio: Completar el control de limpieza del cuarto refrigerado y pallets para el día 15/03/2024.
+                                    </div>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Información de Recurrencia" name="recurrence_info">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="alert alert-info">
+                                        <h4><i class="fa fa-info-circle"></i> Información sobre Frecuencias</h4>
+                                        
+                                        <p><strong>Diario:</strong> Se crearán tareas todos los días desde la fecha de inicio.</p>
+                                        
+                                        <p><strong>Semanal:</strong> Se crearán tareas cada semana en el día especificado (ej: todos los Lunes).</p>
+                                        
+                                        <p><strong>Mensual:</strong> Se crearán tareas cada mes en el día especificado (ej: día 15 de cada mes).</p>
+                                        
+                                        <hr/>
+                                        
+                                        <p><strong>Días de Anticipación:</strong> 
+                                        Si configura "2 días de anticipación", las tareas se crearán 2 días antes de la fecha objetivo. 
+                                        Por ejemplo, para un control del Viernes, la tarea se creará el Miércoles.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </page>
+                    </notebook>
+                </sheet>
+                
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_quality_control_recurring_task_search" model="ir.ui.view">
+        <field name="name">quality.control.recurring.task.search</field>
+        <field name="model">quality.control.recurring.task</field>
+        <field name="arch" type="xml">
+            <search string="Buscar Configuraciones de Tareas">
+                <field name="name"/>
+                <field name="assigned_user_ids"/>
+                <field name="task_type"/>
+                
+                <filter string="Activas" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Inactivas" name="inactive" domain="[('active', '=', False)]"/>
+                
+                <separator/>
+                <filter string="Diarias" name="daily" domain="[('recurrence_type', '=', 'daily')]"/>
+                <filter string="Semanales" name="weekly" domain="[('recurrence_type', '=', 'weekly')]"/>
+                <filter string="Mensuales" name="monthly" domain="[('recurrence_type', '=', 'monthly')]"/>
+                
+                <separator/>
+                <filter string="Mis Configuraciones" name="my_configs" 
+                        domain="[('assigned_user_ids', 'in', [uid])]"/>
+                
+                <group expand="0" string="Agrupar Por">
+                    <filter string="Tipo de Control" name="group_by_task_type" context="{'group_by': 'task_type'}"/>
+                    <filter string="Frecuencia" name="group_by_recurrence" context="{'group_by': 'recurrence_type'}"/>
+                    <filter string="Estado" name="group_by_active" context="{'group_by': 'active'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_quality_control_recurring_task" model="ir.actions.act_window">
+        <field name="name">Configuración de Tareas Recurrentes</field>
+        <field name="res_model">quality.control.recurring.task</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                ¡Crear tu primera configuración de tareas recurrentes!
+            </p>
+            <p>
+                Aquí puedes configurar tareas automáticas que recordarán a los usuarios 
+                completar los controles de calidad en las fechas correspondientes.
+            </p>
+            <p>
+                <b>Características:</b>
+            </p>
+            <ul>
+                <li>Configuración de frecuencia (diaria, semanal, mensual)</li>
+                <li>Asignación automática a múltiples usuarios</li>
+                <li>Plantillas personalizables para títulos y descripciones</li>
+                <li>Generación automática mediante trabajos programados</li>
+            </ul>
+        </field>
+    </record>
+</odoo>
