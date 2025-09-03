@@ -76,10 +76,10 @@
                     <notebook>
                         <page string="Firmas Digitales" name="signatures">
                             <group>
-                                <group string="Firma del Responsable - Asistente de Cocina">
+                                <group string="Firma del Responsable">
                                     <field name="responsible_signature" widget="signature"/>
                                 </group>
-                                <group string="Firma del Supervisor - Supervisor de Cocina y Deshidratados">
+                                <group string="Firma del Supervisor">
                                     <field name="supervisor_signature" widget="signature"/>
                                 </group>
                             </group>

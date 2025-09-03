@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- Tree View -->
-    <record id="view_quality_control_vegetable_pallet_cleaning_tree" model="ir.ui.view">
-        <field name="name">quality.control.vegetable.pallet.cleaning.tree</field>
-        <field name="model">quality.control.vegetable.pallet.cleaning</field>
+    <record id="view_quality_control_pediluvios_cleaning_tree" model="ir.ui.view">
+        <field name="name">quality.control.pediluvios.cleaning.tree</field>
+        <field name="model">quality.control.pediluvios.cleaning</field>
         <field name="arch" type="xml">
-            <tree string="Control de Limpieza de Palets de Verdura">
+            <tree string="Control y Aplicación de Sterbac para Pediluvios">
                 <field name="name"/>
                 <field name="control_date"/>
                 <field name="responsible_id"/>
-                <field name="is_compliant" widget="boolean_toggle" string="Cumple"/>
-                <field name="attention_required" widget="boolean" string="Atención"/>
+                <field name="deshidratado_pediluvio" widget="boolean_toggle" string="Deshidratado"/>
+                <field name="cocina_pediluvio" widget="boolean_toggle" string="Cocina"/>
                 <field name="state" decoration-info="state=='draft'" decoration-warning="state=='in_progress'" decoration-success="state in ['completed','validated']"/>
             </tree>
         </field>
     </record>
 
     <!-- Form View -->
-    <record id="view_quality_control_vegetable_pallet_cleaning_form" model="ir.ui.view">
-        <field name="name">quality.control.vegetable.pallet.cleaning.form</field>
-        <field name="model">quality.control.vegetable.pallet.cleaning</field>
+    <record id="view_quality_control_pediluvios_cleaning_form" model="ir.ui.view">
+        <field name="name">quality.control.pediluvios.cleaning.form</field>
+        <field name="model">quality.control.pediluvios.cleaning</field>
         <field name="arch" type="xml">
-            <form string="Control de Limpieza de Palets de Verdura">
+            <form string="Control y Aplicación de Sterbac para Pediluvios">
                 <header>
                     <button name="action_start_control" string="Iniciar Control" type="object" 
                             invisible="state != 'draft'" class="oe_highlight"/>
@@ -43,7 +43,7 @@
                                      alt="KANI" style="max-height: 80px;" class="img-fluid"/>
                             </div>
                             <div class="col-8 text-center">
-                                <h2 style="margin: 0; font-weight: bold;">CONTROL DE LIMPIEZA DE PALETS DE VERDURA</h2>
+                                <h2 style="margin: 0; font-weight: bold;">CONTROL Y APLICACIÓN DE STERBAC PARA PEDILUVIOS</h2>
                             </div>
                             <div class="col-2 text-right">
                                 <div style="text-align: right;">
@@ -65,9 +65,9 @@
                     </group>
 
                     <!-- Control Fields directly in form -->
-                    <group string="Control de Limpieza">
-                        <field name="is_compliant" widget="boolean_toggle" string="Control Cumple"/>
-                        <field name="attention_required" string="⚠ Llamada de Atención"/>
+                    <group string="Control de Pediluvios">
+                        <field name="deshidratado_pediluvio" widget="boolean_toggle"/>
+                        <field name="cocina_pediluvio" widget="boolean_toggle"/>
                     </group>
 
                     <!-- Add spacing before tabs -->
@@ -86,7 +86,7 @@
                         </page>
 
                         <page string="Observaciones Generales" name="notes">
-                            <field name="notes" placeholder="Ingrese observaciones generales adicionales sobre el control de limpieza de palets de verdura..."/>
+                            <field name="notes" placeholder="Ingrese observaciones generales adicionales sobre el control de pediluvios..."/>
                         </page>
                     </notebook>
                 </sheet>
@@ -101,11 +101,11 @@
     </record>
 
     <!-- Search View -->
-    <record id="view_quality_control_vegetable_pallet_cleaning_search" model="ir.ui.view">
-        <field name="name">quality.control.vegetable.pallet.cleaning.search</field>
-        <field name="model">quality.control.vegetable.pallet.cleaning</field>
+    <record id="view_quality_control_pediluvios_cleaning_search" model="ir.ui.view">
+        <field name="name">quality.control.pediluvios.cleaning.search</field>
+        <field name="model">quality.control.pediluvios.cleaning</field>
         <field name="arch" type="xml">
-            <search string="Buscar Controles de Limpieza de Palets de Verdura">
+            <search string="Buscar Controles de Pediluvios">
                 <field name="name" string="Número"/>
                 <field name="responsible_id" string="Responsable"/>
                 <field name="supervisor_id" string="Supervisor"/>
@@ -133,17 +133,17 @@
     </record>
 
     <!-- Action -->
-    <record id="action_quality_control_vegetable_pallet_cleaning" model="ir.actions.act_window">
-        <field name="name">Control de Limpieza Palets de Verdura</field>
-        <field name="res_model">quality.control.vegetable.pallet.cleaning</field>
+    <record id="action_quality_control_pediluvios_cleaning" model="ir.actions.act_window">
+        <field name="name">Control de Pediluvios</field>
+        <field name="res_model">quality.control.pediluvios.cleaning</field>
         <field name="view_mode">tree,form</field>
         <field name="context">{}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                ¡Crear tu primer control de limpieza de palets de verdura!
+                ¡Crear tu primer control de pediluvios!
             </p>
             <p>
-                Aquí puedes gestionar todos los controles de limpieza de palets de verdura.
+                Aquí puedes gestionar todos los controles y aplicación de Sterbac para pediluvios.
                 Cada control incluye firmas digitales y genera reportes PDF para auditorías.
             </p>
         </field>

@@ -25,7 +25,8 @@ class QualityControlRecurringTask(models.Model):
     # Task configuration
     task_type = fields.Selection([
         ('cleaning_control', 'Control de Limpieza de Cuarto Refrigerado'),
-        ('vegetable_pallet_cleaning', 'Control de Limpieza de Palets de Verdura')
+        ('vegetable_pallet_cleaning', 'Control de Limpieza de Palets de Verdura'),
+        ('pediluvios_control', 'Control y Aplicación de Sterbac para Pediluvios')
     ], string='Tipo de Control', required=True, default='cleaning_control')
     
     # Recurrence configuration

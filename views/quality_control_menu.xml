@@ -39,6 +39,13 @@
               parent="menu_quality_control_cleaning"
               action="action_quality_control_vegetable_pallet_cleaning"
               sequence="20"/>
+        
+    <!-- Menu Item - Pediluvios Control -->
+    <menuitem id="menu_quality_control_pediluvios"
+              name="Control Pediluvios"
+              parent="menu_quality_control_cleaning"
+              action="action_quality_control_pediluvios_cleaning"
+              sequence="30"/>
 
     <!-- Sub Menu - Configuration -->
     <menuitem id="menu_quality_control_configuration"
