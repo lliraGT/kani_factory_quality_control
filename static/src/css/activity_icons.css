@@ -1,0 +1,73 @@
+/* Override notification systray icons for KANI activities */
+
+/* Target the general notification area - replace cube icons */
+.o_mail_systray_dropdown .o_mail_preview .o_mail_preview_image {
+    position: relative;
+}
+
+/* When the notification contains KANI text, override the icon */
+.o_mail_systray_dropdown .o_mail_preview:has(.o_mail_preview_info:contains("Control de Calidad")) .o_mail_preview_image,
+.o_mail_systray_dropdown .o_mail_preview:has(.o_mail_preview_info:contains("KANI")) .o_mail_preview_image,
+.o_mail_systray_dropdown .o_mail_preview:has(.o_mail_preview_info:contains("Configuración de Tareas")) .o_mail_preview_image {
+    background-image: url('/kani_factory_quality_control/static/src/img/kani_logo.png') !important;
+    background-size: contain !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    background-color: white !important;
+    border: 1px solid #64b9b0 !important;
+    border-radius: 4px !important;
+}
+
+/* Hide the original cube icon when KANI logo is shown */
+.o_mail_systray_dropdown .o_mail_preview:has(.o_mail_preview_info:contains("Control de Calidad")) .o_mail_preview_image *,
+.o_mail_systray_dropdown .o_mail_preview:has(.o_mail_preview_info:contains("KANI")) .o_mail_preview_image *,
+.o_mail_systray_dropdown .o_mail_preview:has(.o_mail_preview_info:contains("Configuración de Tareas")) .o_mail_preview_image * {
+    display: none !important;
+}
+
+/* Alternative approach: Target by model if available in data attributes */
+.o_mail_systray_dropdown .o_mail_preview[data-res-model="quality.control.recurring.task"] .o_mail_preview_image {
+    background-image: url('/kani_factory_quality_control/static/src/img/kani_logo.png') !important;
+    background-size: contain !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    background-color: white !important;
+    border: 1px solid #64b9b0 !important;
+    border-radius: 4px !important;
+}
+
+.o_mail_systray_dropdown .o_mail_preview[data-res-model="quality.control.recurring.task"] .o_mail_preview_image * {
+    display: none !important;
+}
+
+/* Add KANI branding to the notification item */
+.o_mail_systray_dropdown .o_mail_preview:has(.o_mail_preview_info:contains("Control de Calidad")),
+.o_mail_systray_dropdown .o_mail_preview:has(.o_mail_preview_info:contains("KANI")),
+.o_mail_systray_dropdown .o_mail_preview:has(.o_mail_preview_info:contains("Configuración de Tareas")),
+.o_mail_systray_dropdown .o_mail_preview[data-res-model="quality.control.recurring.task"] {
+    border-left: 3px solid #64b9b0 !important;
+}
+
+/* Fallback: If the above doesn't work, target all cube icons in systray */
+.o_mail_systray_dropdown .o_mail_preview_image img[src*="cube"],
+.o_mail_systray_dropdown .o_mail_preview_image .fa-cube {
+    display: none !important;
+}
+
+.o_mail_systray_dropdown .o_mail_preview_image:has(img[src*="cube"])::before,
+.o_mail_systray_dropdown .o_mail_preview_image:has(.fa-cube)::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('/kani_factory_quality_control/static/src/img/kani_logo.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: white;
+    border: 1px solid #64b9b0;
+    border-radius: 4px;
+    z-index: 1;
+}

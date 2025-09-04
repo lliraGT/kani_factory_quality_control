@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Custom Activity Type for KANI Quality Control -->
+        <record id="mail_activity_type_kani_quality_control" model="mail.activity.type">
+            <field name="name">KANI Control de Calidad</field>
+            <field name="summary">Control de Calidad KANI</field>
+            <field name="icon">fa-industry</field>
+            <field name="category">default</field>
+            <field name="delay_count">0</field>
+            <field name="delay_unit">days</field>
+            <field name="delay_from">current_date</field>
+        </record>
+    </data>
+</odoo>

@@ -16,6 +16,7 @@
         * Automatic task generation for quality controls
         * Dashboard for monitoring recurring tasks
         * Personal task management interface
+        * Custom KANI branding for activity notifications
     """,
     'author': 'Your Company',
     'website': 'https://www.yourcompany.com',
@@ -28,6 +29,7 @@
     'data': [
         'security/ir.model.access.csv',
         'data/sequence_data.xml',
+        'data/activity_type_data.xml',  # Add this line
         'data/cron_data.xml',
         'views/quality_control_views.xml',
         'views/vegetable_pallet_views.xml',
@@ -42,6 +44,13 @@
         'reports/vegetable_pallet_template.xml',
         'reports/pediluvios_template.xml',
     ],
+    'assets': {  # Add this section
+        'web.assets_backend': [
+            'kani_factory_quality_control/static/src/css/signature_styles.css',
+            'kani_factory_quality_control/static/src/css/activity_icons.css',
+            'kani_factory_quality_control/static/src/js/systray_notifications.js',  # Add this line
+        ],
+    },
     'installable': True,
     'application': True,
     'auto_install': False,

@@ -155,6 +155,26 @@ class QualityControlRecurringTask(models.Model):
             if record.reminder_time < 0 or record.reminder_time >= 24:
                 raise ValidationError(_('La hora debe estar entre 0.0 y 23.59'))
 
+    def _get_custom_activity_type(self):
+        """Get or create a custom activity type with KANI icon"""
+        activity_type = self.env['mail.activity.type'].search([
+            ('name', '=', 'KANI Control de Calidad')
+        ], limit=1)
+        
+        if not activity_type:
+            # Fallback to creating if not found in data file
+            activity_type = self.env['mail.activity.type'].create({
+                'name': 'KANI Control de Calidad',
+                'summary': 'Control de Calidad KANI',
+                'icon': 'fa-industry',  # Use industry icon which we'll override with CSS
+                'category': 'default',
+                'delay_count': 0,
+                'delay_unit': 'days',
+                'delay_from': 'current_date',
+            })
+        
+        return activity_type
+
     def _calculate_next_date(self, from_date):
         """Calculate the next date based on recurrence configuration"""
         if self.recurrence_type == 'daily':
@@ -189,9 +209,12 @@ class QualityControlRecurringTask(models.Model):
             date=target_date.strftime('%d/%m/%Y')
         )
         
+        # Get custom activity type with KANI branding
+        custom_activity_type = self._get_custom_activity_type()
+        
         # Create activity (task) for the user
         activity_vals = {
-            'activity_type_id': self.env.ref('mail.mail_activity_data_todo').id,
+            'activity_type_id': custom_activity_type.id,  # Use custom activity type instead of default
             'summary': task_title,
             'note': task_description,
             'date_deadline': target_date,
