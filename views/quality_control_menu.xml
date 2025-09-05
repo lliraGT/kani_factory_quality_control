@@ -20,7 +20,7 @@
               action="action_my_quality_control_activities"
               sequence="7"/>
 
-    <!-- Sub Menu - Controls -->
+    <!-- Sub Menu - Control de Limpieza -->
     <menuitem id="menu_quality_control_cleaning"
               name="Control de Limpieza"
               parent="menu_quality_control_main"
@@ -46,6 +46,19 @@
               parent="menu_quality_control_cleaning"
               action="action_quality_control_pediluvios_cleaning"
               sequence="30"/>
+
+    <!-- Sub Menu - Control de Plagas (SEPARATE SUBMENU) -->
+    <menuitem id="menu_quality_control_pest"
+              name="Control de Plagas"
+              parent="menu_quality_control_main"
+              sequence="20"/>
+
+    <!-- Menu Item - Pest Control -->
+    <menuitem id="menu_quality_control_pest_control"
+              name="Control de Plagas Planta"
+              parent="menu_quality_control_pest"
+              action="action_quality_control_pest_control"
+              sequence="10"/>
 
     <!-- Sub Menu - Configuration -->
     <menuitem id="menu_quality_control_configuration"

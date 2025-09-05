@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Single Pest Control Template -->
+    <template id="report_quality_control_pest_control_single_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <style>
+                            .header-table {
+                                width: 100%;
+                                border-collapse: collapse;
+                                margin-bottom: 20px;
+                            }
+                            .header-table td {
+                                border: 2px solid #000;
+                                padding: 8px;
+                                vertical-align: top;
+                            }
+                            .logo-cell {
+                                width: 15%;
+                                text-align: center;
+                                background-color: white !important;
+                            }
+                            .title-cell {
+                                width: 70%;
+                                text-align: center;
+                                font-weight: bold;
+                                font-size: 14px;
+                            }
+                            .info-cell {
+                                width: 15%;
+                                background-color: #e8e8e8;
+                                font-size: 11px;
+                            }
+                            .control-table {
+                                width: 100%;
+                                border-collapse: collapse;
+                                margin-top: 20px;
+                                font-size: 10px;
+                            }
+                            .control-table th, .control-table td {
+                                border: 1px solid #000;
+                                padding: 3px;
+                                text-align: center;
+                                vertical-align: middle;
+                            }
+                            .control-table th {
+                                background-color: #64b9b0;
+                                font-weight: bold;
+                                font-size: 9px;
+                            }
+                            .control-table td {
+                                height: 25px;
+                            }
+                            .signature-table {
+                                width: 100%;
+                                margin-top: 30px;
+                                border-collapse: collapse;
+                            }
+                            .signature-table td {
+                                border: 1px solid #000;
+                                padding: 10px;
+                                height: 80px;
+                                vertical-align: top;
+                            }
+                            .signature-header {
+                                background-color: #64b9b0;
+                                font-weight: bold;
+                                text-align: center;
+                            }
+                            .checkbox {
+                                width: 12px;
+                                height: 12px;
+                                border: 1px solid #000;
+                                display: inline-block;
+                                text-align: center;
+                                line-height: 12px;
+                                font-size: 8px;
+                            }
+                            .checkbox-checked {
+                                background-color: #000;
+                                color: white;
+                            }
+                            .location-column {
+                                width: 12%;
+                                text-align: left;
+                                padding-left: 5px;
+                            }
+                            .code-column {
+                                width: 8%;
+                            }
+                            .clean-column {
+                                width: 8%;
+                            }
+                            .consumption-columns {
+                                width: 8%;
+                            }
+                            .observations-column {
+                                width: 40%;
+                                text-align: left;
+                                padding-left: 5px;
+                                font-size: 8px;
+                            }
+                        </style>
+
+                        <!-- Header Table -->
+                        <table class="header-table">
+                            <tr>
+                                <td class="logo-cell">
+                                    <img src="/kani_factory_quality_control/static/src/img/kani_logo.png" 
+                                         alt="KANI" style="max-height: 70px;"/>
+                                </td>
+                                <td class="title-cell">
+                                    CONTROL DE PLAGAS PLANTA KANI
+                                </td>
+                                <td class="info-cell">
+                                    <div style="text-align: right;">
+                                        <strong>Control N°:</strong><br/>
+                                        <span style="font-size: 14px; color: #64b9b0;" t-field="doc.name"/><br/><br/>
+                                        <strong>Responsable:</strong><br/>
+                                        <span t-field="doc.responsible_id.name"/><br/><br/>
+                                        <strong>Supervisión:</strong><br/>
+                                        <span t-field="doc.supervisor_id.name"/>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Info Section -->
+                        <div style="background-color: #e8e8e8; padding: 8px; margin-bottom: 15px; border: 1px solid #000;">
+                            <div style="font-size: 11px;">
+                                <strong>Responsable:</strong> <span t-field="doc.responsible_id.name"/> | 
+                                <strong>Operador de Fumigado</strong><br/>
+                                <strong>Nomenclatura:</strong><br/>
+                                SC: Sin Consumo | CC: Consumo Completo | CC+: Consumo superior al 30%
+                            </div>
+                        </div>
+
+                        <!-- Main Control Table -->
+                        <table class="control-table">
+                            <thead>
+                                <tr>
+                                    <th rowspan="2" class="location-column">Fecha</th>
+                                    <th rowspan="2" class="location-column">Ubicación</th>
+                                    <th rowspan="2" class="code-column">Código</th>
+                                    <th rowspan="2" class="clean-column">Limpieza</th>
+                                    <th colspan="3" style="width: 24%;">Consumo de Trampas</th>
+                                    <th rowspan="2" class="observations-column">Observaciones</th>
+                                </tr>
+                                <tr>
+                                    <th class="consumption-columns">SC</th>
+                                    <th class="consumption-columns">CC</th>
+                                    <th class="consumption-columns">CC+</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="doc.pest_control_line_ids" t-as="line">
+                                    <tr>
+                                        <td style="font-size: 8px;">
+                                            <t t-if="line_index == 0">
+                                                <span t-field="doc.control_date"/>
+                                            </t>
+                                        </td>
+                                        <td class="location-column">
+                                            <span t-field="line.location"/>
+                                        </td>
+                                        <td class="code-column">
+                                            <span t-field="line.code"/>
+                                        </td>
+                                        <td class="clean-column">
+                                            <span class="checkbox" t-att-class="'checkbox-checked' if line.cleanliness_ok else 'checkbox'">
+                                                <t t-if="line.cleanliness_ok">✓</t>
+                                            </span>
+                                        </td>
+                                        <td class="consumption-columns">
+                                            <span class="checkbox" t-att-class="'checkbox-checked' if line.trap_consumption == 'sc' else 'checkbox'">
+                                                <t t-if="line.trap_consumption == 'sc'">✓</t>
+                                            </span>
+                                        </td>
+                                        <td class="consumption-columns">
+                                            <span class="checkbox" t-att-class="'checkbox-checked' if line.trap_consumption == 'cc' else 'checkbox'">
+                                                <t t-if="line.trap_consumption == 'cc'">✓</t>
+                                            </span>
+                                        </td>
+                                        <td class="consumption-columns">
+                                            <span class="checkbox" t-att-class="'checkbox-checked' if line.trap_consumption == 'cc_plus' else 'checkbox'">
+                                                <t t-if="line.trap_consumption == 'cc_plus'">✓</t>
+                                            </span>
+                                        </td>
+                                        <td class="observations-column">
+                                            <span t-field="line.observations"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+
+                        <!-- Signatures Section -->
+                        <table class="signature-table">
+                            <tr>
+                                <td class="signature-header" style="width: 50%;">
+                                    Responsable<br/>
+                                    Operador de Fumigado
+                                </td>
+                                <td class="signature-header" style="width: 50%;">
+                                    Supervisión<br/>
+                                    Supervisor de Cocina y Deshidratados
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="height: 100px; vertical-align: bottom;">
+                                    <t t-if="doc.responsible_signature">
+                                        <img t-att-src="image_data_uri(doc.responsible_signature)" 
+                                             style="max-width: 200px; max-height: 80px;"/>
+                                    </t>
+                                    <div style="border-top: 1px solid #000; margin-top: 50px; text-align: center; padding-top: 5px;">
+                                        <strong><span t-field="doc.responsible_id.name"/></strong><br/>
+                                        Fecha: <span t-field="doc.control_date"/>
+                                    </div>
+                                </td>
+                                <td style="height: 100px; vertical-align: bottom;">
+                                    <t t-if="doc.supervisor_signature">
+                                        <img t-att-src="image_data_uri(doc.supervisor_signature)" 
+                                             style="max-width: 200px; max-height: 80px;"/>
+                                    </t>
+                                    <div style="border-top: 1px solid #000; margin-top: 50px; text-align: center; padding-top: 5px;">
+                                        <strong><span t-field="doc.supervisor_id.name"/></strong><br/>
+                                        Fecha: <span t-field="doc.control_date"/>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- General Notes Section -->
+                        <t t-if="doc.notes">
+                            <div style="margin-top: 20px; border: 1px solid #000; padding: 10px;">
+                                <strong>Observaciones Generales:</strong><br/>
+                                <span t-field="doc.notes"/>
+                            </div>
+                        </t>
+
+                        <!-- Footer -->
+                        <div style="margin-top: 30px; font-size: 10px; text-align: center;">
+                            <strong>Control N°: <span t-field="doc.name"/></strong> | 
+                            Fecha de Creación: <span t-field="doc.create_date" t-options="{'widget': 'datetime'}"/> | 
+                            Estado: <span t-field="doc.state"/>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <!-- Multiple Pest Controls Template -->
+    <template id="report_quality_control_pest_control_multiple_template">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <style>
+                        .header-table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-bottom: 20px;
+                        }
+                        .header-table td {
+                            border: 2px solid #000;
+                            padding: 8px;
+                            vertical-align: middle;
+                        }
+                        .logo-cell {
+                            width: 15%;
+                            text-align: center;
+                            background-color: white !important;
+                        }
+                        .title-cell {
+                            width: 85%;
+                            text-align: center;
+                            font-weight: bold;
+                            font-size: 16px;
+                        }
+                        .controls-table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-top: 20px;
+                            font-size: 8px;
+                        }
+                        .controls-table th, .controls-table td {
+                            border: 1px solid #000;
+                            padding: 2px;
+                            text-align: center;
+                        }
+                        .controls-table th {
+                            background-color: #64b9b0;
+                            font-weight: bold;
+                        }
+                        .checkbox-small {
+                            width: 8px;
+                            height: 8px;
+                            border: 1px solid #000;
+                            display: inline-block;
+                            text-align: center;
+                            line-height: 8px;
+                            font-size: 6px;
+                        }
+                        .checkbox-checked-small {
+                            background-color: #000;
+                            color: white;
+                        }
+                        .signature-section {
+                            margin-top: 40px;
+                            border: 2px solid #000;
+                            padding: 15px;
+                        }
+                    </style>
+
+                    <!-- Header Table -->
+                    <table class="header-table">
+                        <tr>
+                            <td class="logo-cell">
+                                <img src="/kani_factory_quality_control/static/src/img/kani_logo.png" 
+                                     alt="KANI" style="max-height: 70px;"/>
+                            </td>
+                            <td class="title-cell">
+                                REPORTE MULTIPLE - CONTROL DE PLAGAS PLANTA KANI
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- Summary info -->
+                    <div style="background-color: #e8e8e8; padding: 5px; margin-bottom: 10px; font-size: 9px;">
+                        <strong>Nomenclatura:</strong> SC: Sin Consumo | CC: Consumo Completo | CC+: Consumo superior al 30%
+                    </div>
+
+                    <!-- Multiple Controls Summary Table -->
+                    <table class="controls-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 10%;">Control No</th>
+                                <th style="width: 10%;">Fecha</th>
+                                <th style="width: 15%;">Responsable</th>
+                                <th style="width: 15%;">Supervisor</th>
+                                <th style="width: 8%;">Locations OK</th>
+                                <th style="width: 8%;">SC Count</th>
+                                <th style="width: 8%;">CC Count</th>
+                                <th style="width: 8%;">CC+ Count</th>
+                                <th style="width: 18%;">Observaciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="docs" t-as="doc">
+                                <tr>
+                                    <td><span t-field="doc.name"/></td>
+                                    <td><span t-field="doc.control_date"/></td>
+                                    <td style="font-size: 7px;"><span t-field="doc.responsible_id.name"/></td>
+                                    <td style="font-size: 7px;"><span t-field="doc.supervisor_id.name"/></td>
+                                    <td>
+                                        <t t-set="clean_count" t-value="len([line for line in doc.pest_control_line_ids if line.cleanliness_ok])"/>
+                                        <span t-esc="clean_count"/>/<span t-esc="len(doc.pest_control_line_ids)"/>
+                                    </td>
+                                    <td>
+                                        <t t-set="sc_count" t-value="len([line for line in doc.pest_control_line_ids if line.trap_consumption == 'sc'])"/>
+                                        <span t-esc="sc_count"/>
+                                    </td>
+                                    <td>
+                                        <t t-set="cc_count" t-value="len([line for line in doc.pest_control_line_ids if line.trap_consumption == 'cc'])"/>
+                                        <span t-esc="cc_count"/>
+                                    </td>
+                                    <td>
+                                        <t t-set="cc_plus_count" t-value="len([line for line in doc.pest_control_line_ids if line.trap_consumption == 'cc_plus'])"/>
+                                        <span t-esc="cc_plus_count"/>
+                                    </td>
+                                    <td style="text-align: left; font-size: 7px;">
+                                        <span t-field="doc.notes"/>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+
+                    <!-- Simplified Supervisor Signature Section -->
+                    <div class="signature-section">
+                        <div style="text-align: center; margin-bottom: 20px;">
+                            <div style="width: 50%; margin: 0 auto;">
+                                <div style="border: 1px solid #000; height: 80px; margin-bottom: 10px;">
+                                    <!-- Empty space for supervisor signature -->
+                                </div>
+                                <strong>Firma del Supervisor</strong><br/>
+                                Supervisor de Cocina y Deshidratados<br/>
+                                Fecha: _______________
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Footer -->
+                    <div style="margin-top: 30px; font-size: 10px; text-align: center;">
+                        Reporte generado | Total de controles: <span t-esc="len(docs)"/>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

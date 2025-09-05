@@ -9,6 +9,9 @@
         
         This module provides:
         * Freeze Room and Pallets Cleaning Control
+        * Vegetable Pallet Cleaning Control
+        * Pediluvios Control and Sterbac Application
+        * Pest Control for Plant KANI
         * Digital forms with signatures
         * PDF report generation
         * Audit trail and compliance tracking
@@ -29,26 +32,29 @@
     'data': [
         'security/ir.model.access.csv',
         'data/sequence_data.xml',
-        'data/activity_type_data.xml',  # Add this line
+        'data/activity_type_data.xml',
         'data/cron_data.xml',
         'views/quality_control_views.xml',
         'views/vegetable_pallet_views.xml',
         'views/pediluvios_views.xml',
+        'views/pest_control_views.xml',
         'views/recurring_task_views.xml',
         'views/dashboard_views.xml',
         'views/quality_control_menu.xml',
         'reports/quality_control_report.xml',
         'reports/vegetable_pallet_report.xml',
         'reports/pediluvios_report.xml',
+        'reports/pest_control_report.xml',
         'reports/quality_control_template.xml',
         'reports/vegetable_pallet_template.xml',
         'reports/pediluvios_template.xml',
+        'reports/pest_control_template.xml',
     ],
-    'assets': {  # Add this section
+    'assets': {
         'web.assets_backend': [
             'kani_factory_quality_control/static/src/css/signature_styles.css',
             'kani_factory_quality_control/static/src/css/activity_icons.css',
-            'kani_factory_quality_control/static/src/js/systray_notifications.js',  # Add this line
+            'kani_factory_quality_control/static/src/js/systray_notifications.js',
         ],
     },
     'installable': True,

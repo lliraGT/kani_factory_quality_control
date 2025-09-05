@@ -7,3 +7,7 @@ access_quality_control_recurring_task_user,quality.control.recurring.task user,m
 access_quality_control_recurring_task_manager,quality.control.recurring.task manager,model_quality_control_recurring_task,base.group_system,1,1,1,1
 access_quality_control_pediluvios_cleaning_user,quality.control.pediluvios.cleaning user,model_quality_control_pediluvios_cleaning,base.group_user,1,1,1,0
 access_quality_control_pediluvios_cleaning_manager,quality.control.pediluvios.cleaning manager,model_quality_control_pediluvios_cleaning,base.group_system,1,1,1,1
+access_quality_control_pest_control_user,quality.control.pest.control user,model_quality_control_pest_control,base.group_user,1,1,1,0
+access_quality_control_pest_control_manager,quality.control.pest.control manager,model_quality_control_pest_control,base.group_system,1,1,1,1
+access_quality_control_pest_control_line_user,quality.control.pest.control.line user,model_quality_control_pest_control_line,base.group_user,1,1,1,0
+access_quality_control_pest_control_line_manager,quality.control.pest.control.line manager,model_quality_control_pest_control_line,base.group_system,1,1,1,1

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Single Pest Control Report Definition -->
+    <record id="action_report_quality_control_pest_control_single" model="ir.actions.report">
+        <field name="name">Control Individual - Control de Plagas</field>
+        <field name="model">quality.control.pest.control</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">kani_factory_quality_control.report_quality_control_pest_control_single_template</field>
+        <field name="report_file">kani_factory_quality_control.report_quality_control_pest_control_single_template</field>
+        <field name="binding_model_id" ref="model_quality_control_pest_control"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'Control_Plagas_%s' % (object.name)</field>
+    </record>
+
+    <!-- Multiple Pest Control Reports Definition -->
+    <record id="action_report_quality_control_pest_control_multiple" model="ir.actions.report">
+        <field name="name">Controles Múltiples - Control de Plagas</field>
+        <field name="model">quality.control.pest.control</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">kani_factory_quality_control.report_quality_control_pest_control_multiple_template</field>
+        <field name="report_file">kani_factory_quality_control.report_quality_control_pest_control_multiple_template</field>
+        <field name="binding_model_id" ref="model_quality_control_pest_control"/>
+        <field name="binding_type">report</field>
+        <field name="multi">True</field>
+        <field name="print_report_name">'Controles_Plagas_%s' % (datetime.now().strftime('%Y%m%d'))</field>
+    </record>
+</odoo>
