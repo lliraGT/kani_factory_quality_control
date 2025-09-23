@@ -60,6 +60,13 @@
               action="action_quality_control_pest_control"
               sequence="10"/>
 
+    <!-- Menu Item - Pest Control Detail -->
+    <menuitem id="menu_quality_control_pest_control_detail"
+              name="Detalle de Control de Plagas"
+              parent="menu_quality_control_pest"
+              action="action_quality_control_pest_control_detail"
+              sequence="20"/>
+
     <!-- Sub Menu - Configuration -->
     <menuitem id="menu_quality_control_configuration"
               name="Configuración"

@@ -40,5 +40,15 @@
             <field name="number_increment">1</field>
             <field name="company_id" eval="False"/>
         </record>
+        
+        <record id="seq_quality_control_pest_control_detail" model="ir.sequence">
+            <field name="name">Detalle de Control de Plagas</field>
+            <field name="code">quality.control.pest.control.detail</field>
+            <field name="prefix">QCD</field>
+            <field name="padding">4</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+            <field name="company_id" eval="False"/>
+        </record>
     </data>
 </odoo>

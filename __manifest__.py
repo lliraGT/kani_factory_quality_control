@@ -12,6 +12,7 @@
         * Vegetable Pallet Cleaning Control
         * Pediluvios Control and Sterbac Application
         * Pest Control for Plant KANI
+        * Detailed Pest Control Management
         * Digital forms with signatures
         * PDF report generation
         * Audit trail and compliance tracking
@@ -38,6 +39,7 @@
         'views/vegetable_pallet_views.xml',
         'views/pediluvios_views.xml',
         'views/pest_control_views.xml',
+        'views/pest_control_detail_views.xml',
         'views/recurring_task_views.xml',
         'views/dashboard_views.xml',
         'views/quality_control_menu.xml',
@@ -45,10 +47,12 @@
         'reports/vegetable_pallet_report.xml',
         'reports/pediluvios_report.xml',
         'reports/pest_control_report.xml',
+        'reports/pest_control_detail_report.xml',
         'reports/quality_control_template.xml',
         'reports/vegetable_pallet_template.xml',
         'reports/pediluvios_template.xml',
         'reports/pest_control_template.xml',
+        'reports/pest_control_detail_template.xml',
     ],
     'assets': {
         'web.assets_backend': [

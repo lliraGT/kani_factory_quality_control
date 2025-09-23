@@ -27,7 +27,8 @@ class QualityControlRecurringTask(models.Model):
         ('cleaning_control', 'Control de Limpieza de Cuarto Refrigerado'),
         ('vegetable_pallet_cleaning', 'Control de Limpieza de Palets de Verdura'),
         ('pediluvios_control', 'Control y Aplicación de Sterbac para Pediluvios'),
-        ('pest_control', 'Control de Plagas Planta KANI')
+        ('pest_control', 'Control de Plagas Planta KANI'),
+        ('pest_control_detail', 'Detalle de Control de Plagas Planta KANI')
     ], string='Tipo de Control', required=True, default='cleaning_control')
     
     # Recurrence configuration

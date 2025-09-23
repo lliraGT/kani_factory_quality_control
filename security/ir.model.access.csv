@@ -11,3 +11,5 @@ access_quality_control_pest_control_user,quality.control.pest.control user,model
 access_quality_control_pest_control_manager,quality.control.pest.control manager,model_quality_control_pest_control,base.group_system,1,1,1,1
 access_quality_control_pest_control_line_user,quality.control.pest.control.line user,model_quality_control_pest_control_line,base.group_user,1,1,1,0
 access_quality_control_pest_control_line_manager,quality.control.pest.control.line manager,model_quality_control_pest_control_line,base.group_system,1,1,1,1
+access_quality_control_pest_control_detail_user,quality.control.pest.control.detail user,model_quality_control_pest_control_detail,base.group_user,1,1,1,0
+access_quality_control_pest_control_detail_manager,quality.control.pest.control.detail manager,model_quality_control_pest_control_detail,base.group_system,1,1,1,1

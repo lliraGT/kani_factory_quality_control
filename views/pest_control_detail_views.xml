@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="view_quality_control_pest_control_detail_tree" model="ir.ui.view">
+        <field name="name">quality.control.pest.control.detail.tree</field>
+        <field name="model">quality.control.pest.control.detail</field>
+        <field name="arch" type="xml">
+            <tree string="Detalle de Control de Plagas Planta KANI">
+                <field name="name"/>
+                <field name="control_date"/>
+                <field name="responsible_id"/>
+                <field name="pest_type"/>
+                <field name="location"/>
+                <field name="finding_type"/>
+                <field name="follow_up_required" widget="boolean_toggle" string="Seguimiento"/>
+                <field name="state" decoration-info="state=='draft'" decoration-warning="state=='in_progress'" decoration-success="state in ['completed','validated']"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_quality_control_pest_control_detail_form" model="ir.ui.view">
+        <field name="name">quality.control.pest.control.detail.form</field>
+        <field name="model">quality.control.pest.control.detail</field>
+        <field name="arch" type="xml">
+            <form string="Detalle de Control de Plagas Planta KANI">
+                <header>
+                    <button name="action_start_control" string="Iniciar Control" type="object" 
+                            invisible="state != 'draft'" class="oe_highlight"/>
+                    <button name="action_complete_control" string="Completar Control" type="object" 
+                            invisible="state != 'in_progress'" class="oe_highlight"/>
+                    <button name="action_validate_control" string="Validar Control" type="object" 
+                            invisible="state != 'completed'" class="oe_highlight"/>
+                    <button name="action_reset_to_draft" string="Resetear a Borrador" type="object" 
+                            invisible="state not in ['in_progress', 'completed']" groups="base.group_system"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,completed,validated"/>
+                </header>
+                
+                <sheet>
+                    <!-- Header with KANI logo and improved layout -->
+                    <div class="oe_title">
+                        <div class="row align-items-center">
+                            <div class="col-2 text-left">
+                                <img src="/kani_factory_quality_control/static/src/img/kani_logo.png" 
+                                     alt="KANI" style="max-height: 80px;" class="img-fluid"/>
+                            </div>
+                            <div class="col-8 text-center">
+                                <h2 style="margin: 0; font-weight: bold;">DETALLE DE CONTROL DE PLAGAS PLANTA KANI</h2>
+                            </div>
+                            <div class="col-2 text-right">
+                                <div style="text-align: right;">
+                                    <span class="o_form_label">Control Number:</span>
+                                    <h3 style="margin: 0; color: #64b9b0;"><field name="name" readonly="1"/></h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group string="Información General">
+                            <field name="control_date" required="1"/>
+                        </group>
+                        <group string="Personal">
+                            <field name="responsible_id" required="1" options="{'no_create': True}"/>
+                            <field name="supervisor_id" required="1" options="{'no_create': True}"/>
+                        </group>
+                    </group>
+
+                    <!-- Control Detail Fields (individual fields like cleaning modules) -->
+                    <group string="Detalle de Control">
+                        <group>
+                            <field name="pest_type"/>
+                            <field name="location"/>
+                            <field name="finding_type"/>
+                        </group>
+                        <group>
+                            <field name="follow_up_required"/>
+                            <field name="follow_up_date" invisible="not follow_up_required"/>
+                        </group>
+                    </group>
+
+                    <!-- Action Taken Section - Full Width -->
+                    <separator string="Acciones Correctivas"/>
+                    <field name="action_taken" nolabel="1" placeholder="Describa las acciones correctivas tomadas..." style="width: 100%;"/>
+
+                    <!-- Add spacing before tabs -->
+                    <div style="margin-top: 30px;"></div>
+
+                    <notebook>
+                        <page string="Firmas Digitales" name="signatures">
+                            <group>
+                                <group string="Firma del Responsable">
+                                    <field name="responsible_signature" widget="signature"/>
+                                </group>
+                                <group string="Firma del Supervisor">
+                                    <field name="supervisor_signature" widget="signature"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Observaciones Generales" name="notes">
+                            <field name="notes" placeholder="Ingrese observaciones generales adicionales sobre el detalle del control de plagas..."/>
+                        </page>
+
+                        <page string="Información de Control" name="control_info">
+                            <div class="alert alert-info">
+                                <h4><i class="fa fa-info-circle"></i> Información sobre el Control Detallado</h4>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <p><strong>Tipos de Plagas:</strong></p>
+                                        <ul>
+                                            <li><strong>Roedor:</strong> Ratones, ratas</li>
+                                            <li><strong>Insecto:</strong> Moscas, cucarachas, hormigas</li>
+                                            <li><strong>Arácnido:</strong> Arañas, ácaros</li>
+                                            <li><strong>Otro:</strong> Otros tipos de plagas</li>
+                                        </ul>
+                                        
+                                        <p><strong>Tipos de Hallazgo:</strong></p>
+                                        <ul>
+                                            <li><strong>Encontrado Vivo:</strong> Plaga encontrada viva</li>
+                                            <li><strong>Encontrado Muerto:</strong> Plaga encontrada muerta</li>
+                                            <li><strong>Rastro/Evidencia:</strong> Heces, mordeduras, etc.</li>
+                                            <li><strong>En Trampa:</strong> Capturado en trampa</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-6">
+                                        <p><strong>Instrucciones de Uso:</strong></p>
+                                        <ol>
+                                            <li>Complete la información general del control</li>
+                                            <li>Seleccione el tipo de plaga encontrada</li>
+                                            <li>Especifique la ubicación exacta</li>
+                                            <li>Indique el tipo de hallazgo</li>
+                                            <li>Describa las acciones correctivas tomadas</li>
+                                            <li>Marque si requiere seguimiento y la fecha</li>
+                                            <li>Complete las firmas digitales</li>
+                                            <li>Genere el reporte PDF</li>
+                                        </ol>
+                                        
+                                        <div class="alert alert-warning mt-3">
+                                            <strong>Nota:</strong> Cada control representa un único hallazgo. 
+                                            Para múltiples hallazgos en la misma fecha, cree controles separados.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </page>
+                    </notebook>
+                </sheet>
+                
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_quality_control_pest_control_detail_search" model="ir.ui.view">
+        <field name="name">quality.control.pest.control.detail.search</field>
+        <field name="model">quality.control.pest.control.detail</field>
+        <field name="arch" type="xml">
+            <search string="Buscar Detalles de Control de Plagas">
+                <field name="name" string="Número"/>
+                <field name="responsible_id" string="Responsable"/>
+                <field name="supervisor_id" string="Supervisor"/>
+                <field name="control_date" string="Fecha"/>
+                <field name="pest_type" string="Tipo de Plaga"/>
+                <field name="location" string="Ubicación"/>
+                
+                <filter string="Mis Controles" name="my_controls" domain="[('responsible_id', '=', uid)]"/>
+                <filter string="Por Supervisar" name="to_supervise" domain="[('supervisor_id', '=', uid), ('state', 'in', ['completed'])]"/>
+                <filter string="Requiere Seguimiento" name="follow_up" domain="[('follow_up_required', '=', True)]"/>
+                <filter string="Hoy" name="today" domain="[('control_date', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter string="Esta Semana" name="this_week" 
+                        domain="[('control_date', '&gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                
+                <separator/>
+                <filter string="Borrador" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="En Progreso" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
+                <filter string="Completado" name="completed" domain="[('state', '=', 'completed')]"/>
+                <filter string="Validado" name="validated" domain="[('state', '=', 'validated')]"/>
+                
+                <separator/>
+                <filter string="Roedores" name="rodents" domain="[('pest_type', '=', 'roedor')]"/>
+                <filter string="Insectos" name="insects" domain="[('pest_type', '=', 'insecto')]"/>
+                <filter string="Arácnidos" name="arachnids" domain="[('pest_type', '=', 'aracnido')]"/>
+                
+                <group expand="0" string="Agrupar Por">
+                    <filter string="Estado" name="group_by_state" context="{'group_by': 'state'}"/>
+                    <filter string="Tipo de Plaga" name="group_by_pest_type" context="{'group_by': 'pest_type'}"/>
+                    <filter string="Responsable" name="group_by_responsible" context="{'group_by': 'responsible_id'}"/>
+                    <filter string="Fecha" name="group_by_date" context="{'group_by': 'control_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_quality_control_pest_control_detail" model="ir.actions.act_window">
+        <field name="name">Detalle de Control de Plagas</field>
+        <field name="res_model">quality.control.pest.control.detail</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                ¡Crear tu primer detalle de control de plagas!
+            </p>
+            <p>
+                Aquí puedes gestionar todos los detalles de control de plagas de la planta KANI.
+                Cada control representa un único hallazgo de plaga con información detallada.
+            </p>
+            <p>
+                <b>Características:</b>
+            </p>
+            <ul>
+                <li>Un control = Un hallazgo específico de plaga</li>
+                <li>Clasificación por tipo de plaga y tipo de hallazgo</li>
+                <li>Seguimiento de acciones correctivas</li>
+                <li>Firmas digitales y reportes PDF</li>
+                <li>Integración con sistema de tareas recurrentes</li>
+            </ul>
+        </field>
+    </record>
+</odoo>

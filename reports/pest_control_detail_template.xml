@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Single Pest Control Detail Template -->
+    <template id="report_quality_control_pest_control_detail_single_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <style>
+                            .header-table {
+                                width: 100%;
+                                border-collapse: collapse;
+                                margin-bottom: 20px;
+                            }
+                            .header-table td {
+                                border: 2px solid #000;
+                                padding: 8px;
+                                vertical-align: top;
+                            }
+                            .logo-cell {
+                                width: 15%;
+                                text-align: center;
+                                background-color: white !important;
+                            }
+                            .title-cell {
+                                width: 70%;
+                                text-align: center;
+                                font-weight: bold;
+                                font-size: 14px;
+                            }
+                            .info-cell {
+                                width: 15%;
+                                background-color: #e8e8e8;
+                                font-size: 11px;
+                            }
+                            .control-table {
+                                width: 100%;
+                                border-collapse: collapse;
+                                margin-top: 20px;
+                                font-size: 11px;
+                            }
+                            .control-table th, .control-table td {
+                                border: 1px solid #000;
+                                padding: 4px;
+                                text-align: center;
+                            }
+                            .control-table th {
+                                background-color: #64b9b0;
+                                font-weight: bold;
+                            }
+                            .signature-table {
+                                width: 100%;
+                                margin-top: 30px;
+                                border-collapse: collapse;
+                            }
+                            .signature-table td {
+                                border: 1px solid #000;
+                                padding: 10px;
+                                height: 80px;
+                                vertical-align: top;
+                            }
+                            .signature-header {
+                                background-color: #64b9b0;
+                                font-weight: bold;
+                                text-align: center;
+                            }
+                        </style>
+
+                        <!-- Header Table -->
+                        <table class="header-table">
+                            <tr>
+                                <td class="logo-cell">
+                                    <img src="/kani_factory_quality_control/static/src/img/kani_logo.png" 
+                                         alt="KANI" style="max-height: 70px;"/>
+                                </td>
+                                <td class="title-cell">
+                                    DETALLE DE CONTROL DE PLAGAS PLANTA KANI
+                                </td>
+                                <td class="info-cell">
+                                    <div style="text-align: right;">
+                                        <strong>Control N°:</strong><br/>
+                                        <span style="font-size: 14px; color: #64b9b0;" t-field="doc.name"/><br/><br/>
+                                        <strong>Responsable:</strong><br/>
+                                        <span t-field="doc.responsible_id.name"/><br/><br/>
+                                        <strong>Supervisión:</strong><br/>
+                                        <span t-field="doc.supervisor_id.name"/>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Info Section -->
+                        <div style="background-color: #e8e8e8; padding: 8px; margin-bottom: 15px; border: 1px solid #000;">
+                            <div style="font-size: 11px;">
+                                <strong>Responsable:</strong> <span t-field="doc.responsible_id.name"/> | 
+                                <strong>Operador de Fumigado</strong><br/>
+                                <strong>Supervisor:</strong> <span t-field="doc.supervisor_id.name"/>
+                            </div>
+                        </div>
+
+                        <!-- Main Control Detail Table (single row) -->
+                        <table class="control-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 15%;">Fecha</th>
+                                    <th style="width: 15%;">Tipo de Plaga</th>
+                                    <th style="width: 25%;">Ubicación</th>
+                                    <th style="width: 20%;">Tipo Encontrado</th>
+                                    <th style="width: 25%;">Observaciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <span t-field="doc.control_date"/>
+                                    </td>
+                                    <td>
+                                        <t t-if="doc.pest_type == 'roedor'">Roedor</t>
+                                        <t t-elif="doc.pest_type == 'insecto'">Insecto</t>
+                                        <t t-elif="doc.pest_type == 'aracnido'">Arácnido</t>
+                                        <t t-elif="doc.pest_type == 'otro'">Otro</t>
+                                        <t t-else="">-</t>
+                                    </td>
+                                    <td style="text-align: left;">
+                                        <span t-field="doc.location"/>
+                                    </td>
+                                    <td>
+                                        <t t-if="doc.finding_type == 'vivo'">Encontrado Vivo</t>
+                                        <t t-elif="doc.finding_type == 'muerto'">Encontrado Muerto</t>
+                                        <t t-elif="doc.finding_type == 'rastro'">Rastro/Evidencia</t>
+                                        <t t-elif="doc.finding_type == 'trampa'">En Trampa</t>
+                                        <t t-else="">-</t>
+                                    </td>
+                                    <td style="text-align: left;">
+                                        <span t-field="doc.notes"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Action Taken Section -->
+                        <t t-if="doc.action_taken">
+                            <div style="margin-top: 20px; border: 1px solid #000; padding: 10px;">
+                                <strong>Acciones Correctivas Tomadas:</strong><br/>
+                                <span t-field="doc.action_taken"/>
+                            </div>
+                        </t>
+
+                        <!-- Follow-up Section -->
+                        <t t-if="doc.follow_up_required">
+                            <div style="margin-top: 20px; border: 1px solid #000; padding: 10px; background-color: #fff3cd;">
+                                <strong>⚠ Seguimiento Requerido</strong><br/>
+                                <t t-if="doc.follow_up_date">
+                                    Fecha de seguimiento programada: <strong><span t-field="doc.follow_up_date"/></strong>
+                                </t>
+                                <t t-else="">
+                                    Programar fecha de seguimiento
+                                </t>
+                            </div>
+                        </t>
+
+                        <!-- Signatures Section -->
+                        <table class="signature-table">
+                            <tr>
+                                <td class="signature-header" style="width: 50%;">
+                                    Responsable<br/>
+                                    Operador de Fumigado
+                                </td>
+                                <td class="signature-header" style="width: 50%;">
+                                    Supervisión<br/>
+                                    Supervisor de Cocina y Deshidratados
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="height: 100px; vertical-align: bottom;">
+                                    <t t-if="doc.responsible_signature">
+                                        <img t-att-src="image_data_uri(doc.responsible_signature)" 
+                                             style="max-width: 200px; max-height: 80px;"/>
+                                    </t>
+                                    <div style="border-top: 1px solid #000; margin-top: 50px; text-align: center; padding-top: 5px;">
+                                        <strong><span t-field="doc.responsible_id.name"/></strong><br/>
+                                        Fecha: <span t-field="doc.control_date"/>
+                                    </div>
+                                </td>
+                                <td style="height: 100px; vertical-align: bottom;">
+                                    <t t-if="doc.supervisor_signature">
+                                        <img t-att-src="image_data_uri(doc.supervisor_signature)" 
+                                             style="max-width: 200px; max-height: 80px;"/>
+                                    </t>
+                                    <div style="border-top: 1px solid #000; margin-top: 50px; text-align: center; padding-top: 5px;">
+                                        <strong><span t-field="doc.supervisor_id.name"/></strong><br/>
+                                        Fecha: <span t-field="doc.control_date"/>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Footer -->
+                        <div style="margin-top: 30px; font-size: 10px; text-align: center;">
+                            <strong>Control N°: <span t-field="doc.name"/></strong> | 
+                            Fecha de Creación: <span t-field="doc.create_date" t-options="{'widget': 'datetime'}"/> | 
+                            Estado: <span t-field="doc.state"/>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <!-- Multiple Pest Control Details Template -->
+    <template id="report_quality_control_pest_control_detail_multiple_template">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <style>
+                        .header-table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-bottom: 20px;
+                        }
+                        .header-table td {
+                            border: 2px solid #000;
+                            padding: 8px;
+                            vertical-align: middle;
+                        }
+                        .logo-cell {
+                            width: 15%;
+                            text-align: center;
+                            background-color: white !important;
+                        }
+                        .title-cell {
+                            width: 85%;
+                            text-align: center;
+                            font-weight: bold;
+                            font-size: 16px;
+                        }
+                        .controls-table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-top: 20px;
+                            font-size: 8px;
+                        }
+                        .controls-table th, .controls-table td {
+                            border: 1px solid #000;
+                            padding: 2px;
+                            text-align: center;
+                        }
+                        .controls-table th {
+                            background-color: #64b9b0;
+                            font-weight: bold;
+                        }
+                        .signature-section {
+                            margin-top: 40px;
+                            border: 2px solid #000;
+                            padding: 15px;
+                        }
+                    </style>
+
+                    <!-- Header Table -->
+                    <table class="header-table">
+                        <tr>
+                            <td class="logo-cell">
+                                <img src="/kani_factory_quality_control/static/src/img/kani_logo.png" 
+                                     alt="KANI" style="max-height: 70px;"/>
+                            </td>
+                            <td class="title-cell">
+                                REPORTE MULTIPLE - DETALLE DE CONTROL DE PLAGAS PLANTA KANI
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- Multiple Controls Detail Table -->
+                    <table class="controls-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 10%;">Control No</th>
+                                <th style="width: 10%;">Fecha</th>
+                                <th style="width: 15%;">Responsable</th>
+                                <th style="width: 10%;">Tipo Plaga</th>
+                                <th style="width: 20%;">Ubicación</th>
+                                <th style="width: 15%;">Tipo Encontrado</th>
+                                <th style="width: 20%;">Observaciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="docs" t-as="doc">
+                                <tr>
+                                    <td><span t-field="doc.name"/></td>
+                                    <td><span t-field="doc.control_date"/></td>
+                                    <td style="font-size: 7px;"><span t-field="doc.responsible_id.name"/></td>
+                                    <td style="font-size: 7px;">
+                                        <t t-if="doc.pest_type == 'roedor'">Roedor</t>
+                                        <t t-elif="doc.pest_type == 'insecto'">Insecto</t>
+                                        <t t-elif="doc.pest_type == 'aracnido'">Arácnido</t>
+                                        <t t-elif="doc.pest_type == 'otro'">Otro</t>
+                                        <t t-else="">-</t>
+                                    </td>
+                                    <td style="text-align: left; font-size: 7px;">
+                                        <span t-field="doc.location"/>
+                                    </td>
+                                    <td style="font-size: 7px;">
+                                        <t t-if="doc.finding_type == 'vivo'">Vivo</t>
+                                        <t t-elif="doc.finding_type == 'muerto'">Muerto</t>
+                                        <t t-elif="doc.finding_type == 'rastro'">Rastro</t>
+                                        <t t-elif="doc.finding_type == 'trampa'">Trampa</t>
+                                        <t t-else="">-</t>
+                                    </td>
+                                    <td style="text-align: left; font-size: 6px;">
+                                        <span t-field="doc.notes"/>
+                                        <t t-if="doc.follow_up_required">
+                                            <br/><strong>Seguimiento: <span t-field="doc.follow_up_date"/></strong>
+                                        </t>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+
+                    <!-- Simplified Supervisor Signature Section -->
+                    <div class="signature-section">
+                        <div style="text-align: center; margin-bottom: 20px;">
+                            <div style="width: 50%; margin: 0 auto;">
+                                <div style="border: 1px solid #000; height: 80px; margin-bottom: 10px;">
+                                    <!-- Empty space for supervisor signature -->
+                                </div>
+                                <strong>Firma del Supervisor</strong><br/>
+                                Supervisor de Cocina y Deshidratados<br/>
+                                Fecha: _______________
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Footer -->
+                    <div style="margin-top: 30px; font-size: 10px; text-align: center;">
+                        Reporte generado | Total de controles: <span t-esc="len(docs)"/>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>
