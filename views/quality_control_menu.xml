@@ -72,6 +72,19 @@
               name="Configuración"
               parent="menu_quality_control_main"
               sequence="80"/>
+    
+    <!-- Nuevo Sub Menu - Recepción de Materia Prima -->
+    <menuitem id="menu_quality_control_raw_material"
+              name="Recepción de Materia Prima"
+              parent="menu_quality_control_main"
+              sequence="30"/>
+
+    <!-- Menu Item - Raw Material Reception Control -->
+    <menuitem id="menu_quality_control_raw_material_reception"
+              name="Control de Recepción"
+              parent="menu_quality_control_raw_material"
+              action="action_quality_control_raw_material_reception"
+              sequence="10"/>
 
     <!-- Menu Item - Recurring Tasks Configuration -->
     <menuitem id="menu_quality_control_recurring_tasks"

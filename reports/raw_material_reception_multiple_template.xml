@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Multiple Raw Material Reception Reports Template -->
+    <template id="report_quality_control_raw_material_reception_multiple_template">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <style>
+                        .header-table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-bottom: 20px;
+                        }
+                        .header-table td {
+                            border: 2px solid #000;
+                            padding: 8px;
+                            vertical-align: middle;
+                        }
+                        .logo-cell {
+                            width: 15%;
+                            text-align: center;
+                            background-color: white !important;
+                        }
+                        .title-cell {
+                            width: 85%;
+                            text-align: center;
+                            font-weight: bold;
+                            font-size: 14px;
+                        }
+                        .controls-table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-top: 20px;
+                            font-size: 8px;
+                        }
+                        .controls-table th, .controls-table td {
+                            border: 1px solid #000;
+                            padding: 2px;
+                            text-align: center;
+                        }
+                        .controls-table th {
+                            background-color: #64b9b0;
+                            font-weight: bold;
+                        }
+                        .checkbox-small {
+                            width: 8px;
+                            height: 8px;
+                            border: 1px solid #000;
+                            display: inline-block;
+                            text-align: center;
+                            line-height: 8px;
+                            font-size: 6px;
+                        }
+                        .checkbox-checked-small {
+                            background-color: #000;
+                            color: white;
+                        }
+                        .signature-section {
+                            margin-top: 40px;
+                            border: 2px solid #000;
+                            padding: 15px;
+                        }
+                    </style>
+
+                    <!-- Header Table -->
+                    <table class="header-table">
+                        <tr>
+                            <td class="logo-cell">
+                                <img src="/kani_factory_quality_control/static/src/img/kani_logo.png" 
+                                     alt="KANI" style="max-height: 70px;"/>
+                            </td>
+                            <td class="title-cell">
+                                REPORTE MULTIPLE - RECEPCIÓN DE MATERIA PRIMA<br/>
+                                <span style="font-size: 10px;">KANI-PO-511 | Versión 01</span>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- Summary Info -->
+                    <div style="background-color: #e8e8e8; padding: 5px; margin-bottom: 10px; font-size: 9px;">
+                        <strong>Período:</strong> 
+                        <t t-set="first_date" t-value="min([doc.reception_date for doc in docs])"/>
+                        <t t-set="last_date" t-value="max([doc.reception_date for doc in docs])"/>
+                        <span t-esc="first_date.strftime('%d/%m/%Y')"/> - <span t-esc="last_date.strftime('%d/%m/%Y')"/> | 
+                        <strong>Total de Recepciones:</strong> <span t-esc="len(docs)"/>
+                    </div>
+
+                    <!-- Multiple Controls Summary Table -->
+                    <table class="controls-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 8%;">Control No</th>
+                                <th style="width: 8%;">Fecha</th>
+                                <th style="width: 15%;">Proveedor</th>
+                                <th style="width: 8%;">Lote</th>
+                                <th style="width: 12%;">Producto</th>
+                                <th style="width: 7%;">Peso Neto (lbs)</th>
+                                <th style="width: 7%;">Calidad</th>
+                                <th style="width: 6%;">Lavado</th>
+                                <th style="width: 6%;">%Merma</th>
+                                <th style="width: 6%;">Vida Útil</th>
+                                <th style="width: 8%;">Temp °C</th>
+                                <th style="width: 9%;">Observaciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="docs" t-as="doc">
+                                <tr>
+                                    <td><span t-field="doc.name"/></td>
+                                    <td><span t-esc="doc.reception_date.strftime('%d/%m')"/></td>
+                                    <td style="text-align: left; font-size: 7px;"><span t-field="doc.supplier_id.name"/></td>
+                                    <td style="font-size: 7px;"><span t-field="doc.lot_number"/></td>
+                                    <td style="font-size: 7px;">
+                                        <t t-if="doc.product_type == 'tubérculos'">Tubérculos</t>
+                                        <t t-elif="doc.product_type == 'hoja'">Hoja</t>
+                                        <t t-elif="doc.product_type == 'crucíferas'">Crucíferas</t>
+                                        <t t-elif="doc.product_type == 'granos'">Granos</t>
+                                        <t t-elif="doc.product_type == 'legumbres'">Legumbres</t>
+                                        <t t-elif="doc.product_type == 'frutas'">Frutas</t>
+                                    </td>
+                                    <td><span t-esc="'{:.1f}'.format(doc.net_weight)"/></td>
+                                    <td style="font-size: 7px;" 
+                                        t-att-style="'background-color: ' + ('lightgreen' if doc.quality_decision == 'approved' else 'lightyellow' if doc.quality_decision == 'approved_observations' else 'lightcoral')">
+                                        <t t-if="doc.quality_decision == 'approved'">✓ APT</t>
+                                        <t t-elif="doc.quality_decision == 'approved_observations'">⚠ OBS</t>
+                                        <t t-elif="doc.quality_decision == 'rejected'">✗ RCH</t>
+                                    </td>
+                                    <td>
+                                        <span class="checkbox-small" t-att-class="'checkbox-checked-small' if doc.washing_required else 'checkbox-small'">
+                                            <t t-if="doc.washing_required">✓</t>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <t t-if="doc.washing_required and doc.waste_percentage">
+                                            <span t-esc="'{:.1f}'.format(doc.waste_percentage)"/>%
+                                        </t>
+                                        <t t-else="">-</t>
+                                    </td>
+                                    <td><span t-field="doc.shelf_life_days"/>d</td>
+                                    <td>
+                                        <t t-if="doc.storage_temperature">
+                                            <span t-esc="'{:.1f}'.format(doc.storage_temperature)"/>
+                                        </t>
+                                        <t t-else="">-</t>
+                                    </td>
+                                    <td style="text-align: left; font-size: 6px;">
+                                        <t t-if="doc.quality_observations">
+                                            <span t-esc="doc.quality_observations[:50]"/>
+                                            <t t-if="len(doc.quality_observations) > 50">...</t>
+                                        </t>
+                                        <t t-elif="doc.notes">
+                                            <span t-esc="doc.notes[:50]"/>
+                                            <t t-if="len(doc.notes) > 50">...</t>
+                                        </t>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                        <tfoot>
+                            <tr style="background-color: #f0f0f0; font-weight: bold;">
+                                <td colspan="5" style="text-align: right;">TOTALES:</td>
+                                <td>
+                                    <t t-set="total_weight" t-value="sum([doc.net_weight for doc in docs])"/>
+                                    <span t-esc="'{:.1f}'.format(total_weight)"/>
+                                </td>
+                                <td colspan="6"></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                    <!-- Quality Summary Statistics -->
+                    <div style="margin-top: 20px; padding: 10px; border: 1px solid #000; background-color: #f8f8f8;">
+                        <div style="font-size: 10px; font-weight: bold; margin-bottom: 5px;">RESUMEN DE CALIDAD</div>
+                        <div style="font-size: 9px;">
+                            <div class="row">
+                                <div class="col-3">
+                                    <t t-set="approved_count" t-value="len([d for d in docs if d.quality_decision == 'approved'])"/>
+                                    <strong>Aprobados:</strong> <span t-esc="approved_count"/> (<span t-esc="'{:.1f}'.format((approved_count/len(docs))*100 if docs else 0)"/>%)
+                                </div>
+                                <div class="col-3">
+                                    <t t-set="obs_count" t-value="len([d for d in docs if d.quality_decision == 'approved_observations'])"/>
+                                    <strong>Con Observaciones:</strong> <span t-esc="obs_count"/> (<span t-esc="'{:.1f}'.format((obs_count/len(docs))*100 if docs else 0)"/>%)
+                                </div>
+                                <div class="col-3">
+                                    <t t-set="rejected_count" t-value="len([d for d in docs if d.quality_decision == 'rejected'])"/>
+                                    <strong>Rechazados:</strong> <span t-esc="rejected_count"/> (<span t-esc="'{:.1f}'.format((rejected_count/len(docs))*100 if docs else 0)"/>%)
+                                </div>
+                                <div class="col-3">
+                                    <t t-set="washed_count" t-value="len([d for d in docs if d.washing_required])"/>
+                                    <strong>Lavados:</strong> <span t-esc="washed_count"/> (<span t-esc="'{:.1f}'.format((washed_count/len(docs))*100 if docs else 0)"/>%)
+                                </div>
+                            </div>
+                            <div class="row" style="margin-top: 5px;">
+                                <div class="col-6">
+                                    <t t-set="avg_waste" t-value="sum([d.waste_percentage for d in docs if d.washing_required])/washed_count if washed_count > 0 else 0"/>
+                                    <strong>% Merma Promedio:</strong> <span t-esc="'{:.2f}'.format(avg_waste)"/>%
+                                </div>
+                                <div class="col-6">
+                                    <t t-set="avg_yield" t-value="sum([d.yield_percentage for d in docs if d.washing_required])/washed_count if washed_count > 0 else 0"/>
+                                    <strong>% Rendimiento Promedio:</strong> <span t-esc="'{:.2f}'.format(avg_yield)"/>%
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Suppliers Summary -->
+                    <div style="margin-top: 15px; padding: 10px; border: 1px solid #000;">
+                        <div style="font-size: 10px; font-weight: bold; margin-bottom: 5px;">RESUMEN POR PROVEEDOR</div>
+                        <table style="width: 100%; font-size: 8px; border-collapse: collapse;">
+                            <thead>
+                                <tr style="background-color: #64b9b0;">
+                                    <th style="border: 1px solid #000; padding: 3px;">Proveedor</th>
+                                    <th style="border: 1px solid #000; padding: 3px;">Recepciones</th>
+                                    <th style="border: 1px solid #000; padding: 3px;">Peso Total (lbs)</th>
+                                    <th style="border: 1px solid #000; padding: 3px;">Aprobados</th>
+                                    <th style="border: 1px solid #000; padding: 3px;">Con Obs</th>
+                                    <th style="border: 1px solid #000; padding: 3px;">Rechazados</th>
+                                    <th style="border: 1px solid #000; padding: 3px;">% Calidad</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="suppliers" t-value="set([doc.supplier_id for doc in docs])"/>
+                                <t t-foreach="suppliers" t-as="supplier">
+                                    <t t-set="supplier_docs" t-value="[d for d in docs if d.supplier_id == supplier]"/>
+                                    <tr>
+                                        <td style="border: 1px solid #000; padding: 2px; text-align: left;">
+                                            <span t-esc="supplier.name"/>
+                                        </td>
+                                        <td style="border: 1px solid #000; padding: 2px;">
+                                            <span t-esc="len(supplier_docs)"/>
+                                        </td>
+                                        <td style="border: 1px solid #000; padding: 2px;">
+                                            <t t-set="supplier_weight" t-value="sum([d.net_weight for d in supplier_docs])"/>
+                                            <span t-esc="'{:.1f}'.format(supplier_weight)"/>
+                                        </td>
+                                        <td style="border: 1px solid #000; padding: 2px;">
+                                            <t t-set="s_approved" t-value="len([d for d in supplier_docs if d.quality_decision == 'approved'])"/>
+                                            <span t-esc="s_approved"/>
+                                        </td>
+                                        <td style="border: 1px solid #000; padding: 2px;">
+                                            <t t-set="s_obs" t-value="len([d for d in supplier_docs if d.quality_decision == 'approved_observations'])"/>
+                                            <span t-esc="s_obs"/>
+                                        </td>
+                                        <td style="border: 1px solid #000; padding: 2px;">
+                                            <t t-set="s_rejected" t-value="len([d for d in supplier_docs if d.quality_decision == 'rejected'])"/>
+                                            <span t-esc="s_rejected"/>
+                                        </td>
+                                        <td style="border: 1px solid #000; padding: 2px; font-weight: bold;">
+                                            <t t-set="s_quality" t-value="(s_approved / len(supplier_docs) * 100) if supplier_docs else 0"/>
+                                            <span t-esc="'{:.1f}'.format(s_quality)"/>%
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Simplified Supervisor Signature Section -->
+                    <div class="signature-section">
+                        <div style="text-align: center; margin-bottom: 20px;">
+                            <div style="width: 50%; margin: 0 auto;">
+                                <div style="border: 1px solid #000; height: 80px; margin-bottom: 10px;">
+                                    <!-- Empty space for supervisor signature -->
+                                </div>
+                                <strong>Firma del Supervisor de Planta</strong><br/>
+                                Fecha: _______________
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Footer -->
+                    <div style="margin-top: 30px; font-size: 9px; text-align: center; border-top: 1px solid #ccc; padding-top: 10px;">
+                        <t t-set="now" t-value="datetime.datetime.now()"/>
+                        Reporte generado el <span t-esc="now.strftime('%d/%m/%Y %H:%M')"/> | 
+                        Total de controles: <span t-esc="len(docs)"/><br/>
+                        <span style="font-size: 8px; color: #666;">
+                            Documento confidencial propiedad de Alimentos Deshidratados y Congelados, S.A. | KANI-PO-511 v01
+                        </span>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

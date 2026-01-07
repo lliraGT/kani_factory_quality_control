@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="view_quality_control_raw_material_reception_tree" model="ir.ui.view">
+        <field name="name">quality.control.raw.material.reception.tree</field>
+        <field name="model">quality.control.raw.material.reception</field>
+        <field name="arch" type="xml">
+            <tree string="Control de Recepción de Materia Prima">
+                <field name="name"/>
+                <field name="reception_date"/>
+                <field name="supplier_id"/>
+                <field name="product_type"/>
+                <field name="lot_number"/>
+                <field name="quality_decision" decoration-success="quality_decision=='approved'" decoration-warning="quality_decision=='approved_observations'" decoration-danger="quality_decision=='rejected'"/>
+                <field name="net_weight"/>
+                <field name="state" decoration-info="state=='draft'" decoration-warning="state in ['reception','quality_check','processing']" decoration-success="state in ['storage','completed']" decoration-danger="state=='rejected'"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_quality_control_raw_material_reception_form" model="ir.ui.view">
+        <field name="name">quality.control.raw.material.reception.form</field>
+        <field name="model">quality.control.raw.material.reception</field>
+        <field name="arch" type="xml">
+            <form string="Control de Recepción de Materia Prima">
+                <header>
+                    <button name="action_start_reception" string="Iniciar Recepción" type="object" 
+                            invisible="state != 'draft'" class="oe_highlight"/>
+                    <button name="action_quality_check" string="Control de Calidad" type="object" 
+                            invisible="state != 'reception'" class="oe_highlight"/>
+                    <button name="action_start_processing" string="Iniciar Procesamiento" type="object" 
+                            invisible="state != 'quality_check'" class="oe_highlight"/>
+                    <button name="action_move_to_storage" string="Mover a Almacenamiento" type="object" 
+                            invisible="state != 'processing'" class="oe_highlight"/>
+                    <button name="action_complete" string="Completar" type="object" 
+                            invisible="state != 'storage'" class="oe_highlight"/>
+                    <button name="action_reject" string="Rechazar Producto" type="object" 
+                            invisible="state not in ['reception', 'quality_check']" class="btn-danger"/>
+                    <button name="action_reset_to_draft" string="Resetear a Borrador" type="object" 
+                            invisible="state == 'draft'" groups="base.group_system"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,reception,quality_check,processing,storage,completed"/>
+                </header>
+                
+                <sheet>
+                    <!-- Header with KANI logo -->
+                    <div class="oe_title">
+                        <div class="row align-items-center">
+                            <div class="col-2 text-left">
+                                <img src="/kani_factory_quality_control/static/src/img/kani_logo.png" 
+                                     alt="KANI" style="max-height: 80px;" class="img-fluid"/>
+                            </div>
+                            <div class="col-8 text-center">
+                                <h2 style="margin: 0; font-weight: bold;">CONTROL DE RECEPCIÓN DE MATERIA PRIMA</h2>
+                                <div style="font-size: 12px; color: #666; margin-top: 5px;">
+                                    KANI-PO-511 | Versión 01
+                                </div>
+                            </div>
+                            <div class="col-2 text-right">
+                                <div style="text-align: right;">
+                                    <span class="o_form_label">Control N°:</span>
+                                    <h3 style="margin: 0; color: #64b9b0;"><field name="name" readonly="1"/></h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sección 1: Recepción del Producto -->
+                    <group string="1. RECEPCIÓN DEL PRODUCTO">
+                        <group>
+                            <field name="reception_date" required="1"/>
+                            <field name="reception_time" widget="float_time"/>
+                            <field name="supplier_id" required="1" options="{'no_create': True}"/>
+                            <field name="lot_number" required="1"/>
+                        </group>
+                        <group>
+                            <field name="harvest_date"/>
+                            <field name="origin"/>
+                            <field name="invoice_reference"/>
+                        </group>
+                    </group>
+
+                    <group string="Verificación de Condiciones del Transporte">
+                        <group>
+                            <field name="transport_clean" widget="boolean_toggle"/>
+                            <field name="transport_no_odors" widget="boolean_toggle"/>
+                        </group>
+                        <group>
+                            <field name="transport_integrity" widget="boolean_toggle"/>
+                            <field name="transport_temperature"/>
+                        </group>
+                    </group>
+
+                    <!-- Sección 2: Control de Calidad -->
+                    <group string="2. CONTROL DE CALIDAD">
+                        <group>
+                            <field name="product_type" required="1"/>
+                            <field name="quality_decision" required="1"/>
+                        </group>
+                        <group>
+                            <field name="shelf_life_days" readonly="1"/>
+                            <field name="expiry_date" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group string="Verificaciones de Calidad">
+                        <group>
+                            <field name="color_adequate" widget="boolean_toggle"/>
+                            <field name="fresh_odor" widget="boolean_toggle"/>
+                            <field name="firm_texture" widget="boolean_toggle"/>
+                            <field name="no_yellow_leaves" widget="boolean_toggle"/>
+                            <field name="no_black_spots" widget="boolean_toggle"/>
+                            <field name="no_soft_parts" widget="boolean_toggle"/>
+                        </group>
+                        <group>
+                            <field name="no_visible_fungi" widget="boolean_toggle"/>
+                            <field name="no_pests" widget="boolean_toggle"/>
+                            <field name="packaging_state_ok" widget="boolean_toggle"/>
+                            <field name="dirt_level_acceptable" widget="boolean_toggle"/>
+                            <field name="no_excess_humidity" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+
+                    <field name="quality_observations" placeholder="Observaciones de control de calidad..." invisible="quality_decision != 'approved_observations'"/>
+
+                    <!-- Sección 3: Pesaje -->
+                    <group string="3. PESAJE INICIAL DEL PRODUCTO">
+                        <group>
+                            <field name="gross_weight" required="1"/>
+                            <field name="packaging_weight"/>
+                        </group>
+                        <group>
+                            <field name="net_weight" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <!-- Sección 4: Limpieza Previa -->
+                    <group string="4. LIMPIEZA PREVIA">
+                        <group>
+                            <field name="pre_cleaning_done" widget="boolean_toggle"/>
+                            <field name="damaged_leaves_removed" widget="boolean_toggle" invisible="not pre_cleaning_done"/>
+                            <field name="damaged_stems_removed" widget="boolean_toggle" invisible="not pre_cleaning_done"/>
+                        </group>
+                        <group>
+                            <field name="dirt_removed" widget="boolean_toggle" invisible="not pre_cleaning_done"/>
+                            <field name="decomposed_units_removed" widget="boolean_toggle" invisible="not pre_cleaning_done"/>
+                        </group>
+                    </group>
+
+                    <!-- Sección 5: Lavado -->
+                    <group string="5. LAVADO DEL PRODUCTO">
+                        <group>
+                            <field name="washing_required" widget="boolean_toggle"/>
+                            <field name="washing_start_time" widget="float_time" invisible="not washing_required"/>
+                            <field name="pre_wash_weight" invisible="not washing_required"/>
+                            <field name="sanitizer_used" invisible="not washing_required"/>
+                        </group>
+                        <group>
+                            <field name="washing_end_time" widget="float_time" invisible="not washing_required"/>
+                            <field name="post_wash_weight" invisible="not washing_required"/>
+                        </group>
+                    </group>
+
+                    <!-- Sección 6: Métricas -->
+                    <group string="6. MÉTRICAS DE CALIDAD" invisible="not washing_required">
+                        <group>
+                            <field name="waste_percentage" readonly="1" widget="percentage"/>
+                        </group>
+                        <group>
+                            <field name="yield_percentage" readonly="1" widget="percentage"/>
+                        </group>
+                    </group>
+
+                    <!-- Sección 7: Almacenamiento -->
+                    <group string="7. ALMACENAMIENTO REFRIGERADO">
+                        <group>
+                            <field name="storage_temperature"/>
+                            <field name="storage_location"/>
+                        </group>
+                        <group>
+                            <field name="fifo_applied" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+
+                    <!-- Personal Responsable -->
+                    <group string="PERSONAL RESPONSABLE">
+                        <group>
+                            <field name="reception_responsible_id" required="1" options="{'no_create': True}"/>
+                            <field name="quality_responsible_id" options="{'no_create': True}"/>
+                        </group>
+                        <group>
+                            <field name="supervisor_id" required="1" options="{'no_create': True}"/>
+                        </group>
+                    </group>
+
+                    <!-- Add spacing before tabs -->
+                    <div style="margin-top: 30px;"></div>
+
+                    <notebook>
+                        <page string="Firmas Digitales" name="signatures">
+                            <group>
+                                <group string="Firma del Encargado de Recepción">
+                                    <field name="reception_signature" widget="signature"/>
+                                </group>
+                                <group string="Firma del Control de Calidad">
+                                    <field name="quality_signature" widget="signature"/>
+                                </group>
+                            </group>
+                            <group>
+                                <group string="Firma del Supervisor de Planta">
+                                    <field name="supervisor_signature" widget="signature"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Observaciones Generales" name="notes">
+                            <field name="notes" placeholder="Ingrese observaciones generales adicionales sobre la recepción de materia prima..."/>
+                        </page>
+
+                        <page string="Guía de Vida Útil" name="shelf_life_guide">
+                            <div class="alert alert-info">
+                                <h4><i class="fa fa-info-circle"></i> Guía de Vida Útil por Tipo de Producto</h4>
+                                
+                                <div class="row">
+                                    <div class="col-6">
+                                        <h5><strong>Tubérculos</strong> (papa, camote, yuca, zanahoria, remolacha)</h5>
+                                        <ul>
+                                            <li>Sin lavar: 30-45 días (8-12°C, ventilados, sin humedad)</li>
+                                            <li>Lavados: 10-20 días (con buen drenaje)</li>
+                                            <li><strong>Recomendación:</strong> No lavar hasta el momento del procesamiento</li>
+                                        </ul>
+
+                                        <h5><strong>Vegetales de Hoja</strong> (acelga, espinaca, lechuga, apio)</h5>
+                                        <ul>
+                                            <li>Vida útil: 5-7 días (0-4°C)</li>
+                                            <li><strong>Importante:</strong> Secar completamente después del lavado</li>
+                                            <li>Procesar en lotes pequeños y frecuentes</li>
+                                        </ul>
+
+                                        <h5><strong>Crucíferas</strong> (brócoli, coliflor, repollo)</h5>
+                                        <ul>
+                                            <li>Vida útil: 8-12 días (0-4°C)</li>
+                                            <li>Mantener en cajas ventiladas</li>
+                                            <li>Evitar condensación dentro de bolsas</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div class="col-6">
+                                        <h5><strong>Granos y Cereales</strong> (maíz, avena, arroz, frijol)</h5>
+                                        <ul>
+                                            <li>Grano seco: 6-12 meses (12-14% humedad)</li>
+                                            <li><strong>NO lavar:</strong> Procesar el mismo día si se humedecen</li>
+                                            <li>Revisar mensualmente presencia de gorgojos</li>
+                                        </ul>
+
+                                        <h5><strong>Legumbres Frescas</strong> (ejote, arveja, habas)</h5>
+                                        <ul>
+                                            <li>Vida útil: 5-10 días (4-6°C)</li>
+                                            <li>Si vienen húmedas: 3-4 días</li>
+                                            <li>Mantener respirando (no sellar herméticamente)</li>
+                                        </ul>
+
+                                        <h5><strong>Frutas</strong> (manzana, plátano, pera)</h5>
+                                        <ul>
+                                            <li>Manzana: 30-60 días refrigerada</li>
+                                            <li>Plátano verde: 7-12 días, maduro: 3-5 días</li>
+                                            <li>Pera: 10-15 días</li>
+                                            <li><strong>Importante:</strong> Separar frutas productoras de etileno</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <hr/>
+                                <div class="alert alert-warning">
+                                    <strong>Temperaturas Recomendadas de Almacenamiento:</strong>
+                                    <ul>
+                                        <li>Cuarto Refrigerado General: 4-6°C</li>
+                                        <li>Tubérculos (sin lavar): 8-12°C</li>
+                                        <li>Vegetales de Hoja y Crucíferas: 0-4°C</li>
+                                        <li>Granos: Ambiente fresco y seco</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </page>
+                    </notebook>
+                </sheet>
+                
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_quality_control_raw_material_reception_search" model="ir.ui.view">
+        <field name="name">quality.control.raw.material.reception.search</field>
+        <field name="model">quality.control.raw.material.reception</field>
+        <field name="arch" type="xml">
+            <search string="Buscar Controles de Recepción">
+                <field name="name" string="Número"/>
+                <field name="supplier_id" string="Proveedor"/>
+                <field name="lot_number" string="Lote"/>
+                <field name="product_type" string="Tipo de Producto"/>
+                <field name="reception_date" string="Fecha"/>
+                
+                <filter string="Mis Recepciones" name="my_receptions" domain="[('reception_responsible_id', '=', uid)]"/>
+                <filter string="Por Supervisar" name="to_supervise" domain="[('supervisor_id', '=', uid), ('state', 'in', ['storage'])]"/>
+                <filter string="Hoy" name="today" domain="[('reception_date', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter string="Esta Semana" name="this_week" 
+                        domain="[('reception_date', '&gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                
+                <separator/>
+                <filter string="Aprobados" name="approved" domain="[('quality_decision', '=', 'approved')]"/>
+                <filter string="Con Observaciones" name="with_observations" domain="[('quality_decision', '=', 'approved_observations')]"/>
+                <filter string="Rechazados" name="rejected" domain="[('quality_decision', '=', 'rejected')]"/>
+                
+                <separator/>
+                <filter string="Borrador" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="En Recepción" name="reception" domain="[('state', '=', 'reception')]"/>
+                <filter string="Control de Calidad" name="quality_check" domain="[('state', '=', 'quality_check')]"/>
+                <filter string="En Procesamiento" name="processing" domain="[('state', '=', 'processing')]"/>
+                <filter string="Almacenado" name="storage" domain="[('state', '=', 'storage')]"/>
+                <filter string="Completado" name="completed" domain="[('state', '=', 'completed')]"/>
+                
+                <group expand="0" string="Agrupar Por">
+                    <filter string="Estado" name="group_by_state" context="{'group_by': 'state'}"/>
+                    <filter string="Proveedor" name="group_by_supplier" context="{'group_by': 'supplier_id'}"/>
+                    <filter string="Tipo de Producto" name="group_by_product_type" context="{'group_by': 'product_type'}"/>
+                    <filter string="Decisión de Calidad" name="group_by_quality" context="{'group_by': 'quality_decision'}"/>
+                    <filter string="Fecha" name="group_by_date" context="{'group_by': 'reception_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_quality_control_raw_material_reception" model="ir.actions.act_window">
+        <field name="name">Recepción de Materia Prima</field>
+        <field name="res_model">quality.control.raw.material.reception</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                ¡Crear tu primer control de recepción de materia prima!
+            </p>
+            <p>
+                Aquí puedes gestionar todo el proceso de recepción, inspección, limpieza, 
+                lavado y almacenamiento de vegetales y tubérculos.
+            </p>
+            <p>
+                <b>Características:</b>
+            </p>
+            <ul>
+                <li>Verificación completa de condiciones de transporte</li>
+                <li>Control de calidad exhaustivo con múltiples puntos de verificación</li>
+                <li>Registro de pesaje inicial, pre-lavado y post-lavado</li>
+                <li>Cálculo automático de merma y rendimiento</li>
+                <li>Gestión de vida útil según tipo de producto</li>
+                <li>Control de temperatura y almacenamiento FIFO</li>
+                <li>Firmas digitales y reportes PDF para auditorías</li>
+                <li>Trazabilidad completa por lote y proveedor</li>
+            </ul>
+        </field>
+    </record>
+</odoo>

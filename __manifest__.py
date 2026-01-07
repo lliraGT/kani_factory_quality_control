@@ -43,6 +43,7 @@
         'views/recurring_task_views.xml',
         'views/dashboard_views.xml',
         'views/quality_control_menu.xml',
+        'views/raw_material_reception_views.xml',
         'reports/quality_control_report.xml',
         'reports/vegetable_pallet_report.xml',
         'reports/pediluvios_report.xml',
@@ -53,6 +54,9 @@
         'reports/pediluvios_template.xml',
         'reports/pest_control_template.xml',
         'reports/pest_control_detail_template.xml',
+        'reports/raw_material_reception_report.xml',
+        'reports/raw_material_reception_template.xml',
+        'reports/raw_material_reception_multiple_template.xml',
     ],
     'assets': {
         'web.assets_backend': [

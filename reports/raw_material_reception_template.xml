@@ -1,0 +1,464 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Single Raw Material Reception Report Template -->
+    <template id="report_quality_control_raw_material_reception_single_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <style>
+                            .header-table {
+                                width: 100%;
+                                border-collapse: collapse;
+                                margin-bottom: 20px;
+                            }
+                            .header-table td {
+                                border: 2px solid #000;
+                                padding: 8px;
+                                vertical-align: top;
+                            }
+                            .logo-cell {
+                                width: 15%;
+                                text-align: center;
+                                background-color: white !important;
+                            }
+                            .title-cell {
+                                width: 70%;
+                                text-align: center;
+                                font-weight: bold;
+                                font-size: 13px;
+                            }
+                            .info-cell {
+                                width: 15%;
+                                background-color: #e8e8e8;
+                                font-size: 10px;
+                            }
+                            .section-title {
+                                background-color: #64b9b0;
+                                font-weight: bold;
+                                padding: 5px;
+                                margin-top: 15px;
+                                margin-bottom: 10px;
+                                font-size: 11px;
+                            }
+                            .data-table {
+                                width: 100%;
+                                border-collapse: collapse;
+                                margin-bottom: 15px;
+                                font-size: 10px;
+                            }
+                            .data-table td {
+                                border: 1px solid #000;
+                                padding: 4px;
+                            }
+                            .label-cell {
+                                width: 30%;
+                                background-color: #f0f0f0;
+                                font-weight: bold;
+                            }
+                            .value-cell {
+                                width: 70%;
+                            }
+                            .checkbox {
+                                width: 12px;
+                                height: 12px;
+                                border: 1px solid #000;
+                                display: inline-block;
+                                text-align: center;
+                                line-height: 12px;
+                                font-size: 10px;
+                            }
+                            .checkbox-checked {
+                                background-color: #000;
+                                color: white;
+                            }
+                            .signature-table {
+                                width: 100%;
+                                margin-top: 30px;
+                                border-collapse: collapse;
+                            }
+                            .signature-table td {
+                                border: 1px solid #000;
+                                padding: 10px;
+                                height: 80px;
+                                vertical-align: top;
+                            }
+                            .signature-header {
+                                background-color: #64b9b0;
+                                font-weight: bold;
+                                text-align: center;
+                                font-size: 10px;
+                            }
+                            .quality-grid {
+                                display: grid;
+                                grid-template-columns: 1fr 1fr;
+                                gap: 5px;
+                                font-size: 9px;
+                            }
+                        </style>
+
+                        <!-- Header Table -->
+                        <table class="header-table">
+                            <tr>
+                                <td class="logo-cell">
+                                    <img src="/kani_factory_quality_control/static/src/img/kani_logo.png" 
+                                         alt="KANI" style="max-height: 70px;"/>
+                                </td>
+                                <td class="title-cell">
+                                    PROCEDIMIENTO ESTÁNDAR DE OPERACIÓN<br/>
+                                    RECEPCIÓN DE MATERIA PRIMA<br/>
+                                    <span style="font-size: 10px;">KANI-PO-511 | Versión 01</span>
+                                </td>
+                                <td class="info-cell">
+                                    <div style="text-align: right;">
+                                        <strong>Control N°:</strong><br/>
+                                        <span style="font-size: 14px; color: #64b9b0;" t-field="doc.name"/><br/><br/>
+                                        <strong>Fecha:</strong><br/>
+                                        <span t-field="doc.reception_date"/><br/><br/>
+                                        <strong>Proveedor:</strong><br/>
+                                        <span t-field="doc.supplier_id.name" style="font-size: 9px;"/>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- 1. Recepción del Producto -->
+                        <div class="section-title">1. RECEPCIÓN DEL PRODUCTO</div>
+                        <table class="data-table">
+                            <tr>
+                                <td class="label-cell">Fecha / Hora</td>
+                                <td class="value-cell">
+                                    <span t-field="doc.reception_date"/> - 
+                                    <t t-if="doc.reception_time">
+                                        <span t-esc="'{:02d}:{:02d}'.format(int(doc.reception_time), int((doc.reception_time % 1) * 60))"/>
+                                    </t>
+                                </td>
+                                <td class="label-cell">Proveedor</td>
+                                <td class="value-cell"><span t-field="doc.supplier_id.name"/></td>
+                            </tr>
+                            <tr>
+                                <td class="label-cell">Lote N°</td>
+                                <td class="value-cell"><span t-field="doc.lot_number"/></td>
+                                <td class="label-cell">Fecha Cosecha</td>
+                                <td class="value-cell"><span t-field="doc.harvest_date"/></td>
+                            </tr>
+                            <tr>
+                                <td class="label-cell">Procedencia</td>
+                                <td class="value-cell"><span t-field="doc.origin"/></td>
+                                <td class="label-cell">Factura</td>
+                                <td class="value-cell"><span t-field="doc.invoice_reference"/></td>
+                            </tr>
+                        </table>
+
+                        <table class="data-table">
+                            <tr style="background-color: #f8f8f8;">
+                                <td colspan="4" style="font-weight: bold; text-align: center;">Verificación de Transporte</td>
+                            </tr>
+                            <tr>
+                                <td style="width: 25%; text-align: center;">
+                                    Limpio<br/>
+                                    <span class="checkbox" t-att-class="'checkbox-checked' if doc.transport_clean else 'checkbox'">
+                                        <t t-if="doc.transport_clean">✓</t>
+                                    </span>
+                                </td>
+                                <td style="width: 25%; text-align: center;">
+                                    Sin Olores<br/>
+                                    <span class="checkbox" t-att-class="'checkbox-checked' if doc.transport_no_odors else 'checkbox'">
+                                        <t t-if="doc.transport_no_odors">✓</t>
+                                    </span>
+                                </td>
+                                <td style="width: 25%; text-align: center;">
+                                    Integridad<br/>
+                                    <span class="checkbox" t-att-class="'checkbox-checked' if doc.transport_integrity else 'checkbox'">
+                                        <t t-if="doc.transport_integrity">✓</t>
+                                    </span>
+                                </td>
+                                <td style="width: 25%; text-align: center;">
+                                    Temperatura<br/>
+                                    <t t-if="doc.transport_temperature">
+                                        <span t-field="doc.transport_temperature"/>°C
+                                    </t>
+                                    <t t-else="">N/A</t>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- 2. Control de Calidad -->
+                        <div class="section-title">2. CONTROL DE CALIDAD</div>
+                        <table class="data-table">
+                            <tr>
+                                <td class="label-cell">Tipo de Producto</td>
+                                <td class="value-cell" colspan="3">
+                                    <t t-if="doc.product_type == 'tubérculos'">Tubérculos (papa, camote, yuca, zanahoria, remolacha)</t>
+                                    <t t-elif="doc.product_type == 'hoja'">Vegetales de Hoja (acelga, espinaca, lechuga, apio)</t>
+                                    <t t-elif="doc.product_type == 'crucíferas'">Crucíferas (brócoli, coliflor, repollo)</t>
+                                    <t t-elif="doc.product_type == 'granos'">Granos y Cereales (maíz, avena, arroz, frijol)</t>
+                                    <t t-elif="doc.product_type == 'legumbres'">Legumbres Frescas (ejote, arveja, habas)</t>
+                                    <t t-elif="doc.product_type == 'frutas'">Frutas</t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label-cell">Decisión de Calidad</td>
+                                <td class="value-cell" t-att-style="'background-color: ' + ('lightgreen' if doc.quality_decision == 'approved' else 'lightyellow' if doc.quality_decision == 'approved_observations' else 'lightcoral')">
+                                    <t t-if="doc.quality_decision == 'approved'">✓ APTO</t>
+                                    <t t-elif="doc.quality_decision == 'approved_observations'">⚠ APTO CON OBSERVACIONES</t>
+                                    <t t-elif="doc.quality_decision == 'rejected'">✗ RECHAZADO</t>
+                                </td>
+                                <td class="label-cell">Vida Útil Estimada</td>
+                                <td class="value-cell">
+                                    <span t-field="doc.shelf_life_days"/> días
+                                    <t t-if="doc.expiry_date"> (Vence: <span t-field="doc.expiry_date"/>)</t>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <table class="data-table">
+                            <tr style="background-color: #f8f8f8;">
+                                <td colspan="4" style="font-weight: bold; text-align: center;">Verificaciones de Calidad</td>
+                            </tr>
+                            <tr>
+                                <td style="width: 25%; font-size: 9px;">
+                                    <span class="checkbox" t-att-class="'checkbox-checked' if doc.color_adequate else 'checkbox'">
+                                        <t t-if="doc.color_adequate">✓</t>
+                                    </span> Color Adecuado
+                                </td>
+                                <td style="width: 25%; font-size: 9px;">
+                                    <span class="checkbox" t-att-class="'checkbox-checked' if doc.fresh_odor else 'checkbox'">
+                                        <t t-if="doc.fresh_odor">✓</t>
+                                    </span> Olor Fresco
+                                </td>
+                                <td style="width: 25%; font-size: 9px;">
+                                    <span class="checkbox" t-att-class="'checkbox-checked' if doc.firm_texture else 'checkbox'">
+                                        <t t-if="doc.firm_texture">✓</t>
+                                    </span> Textura Firme
+                                </td>
+                                <td style="width: 25%; font-size: 9px;">
+                                    <span class="checkbox" t-att-class="'checkbox-checked' if doc.no_yellow_leaves else 'checkbox'">
+                                        <t t-if="doc.no_yellow_leaves">✓</t>
+                                    </span> Sin Hojas Amarillas
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 9px;">
+                                    <span class="checkbox" t-att-class="'checkbox-checked' if doc.no_black_spots else 'checkbox'">
+                                        <t t-if="doc.no_black_spots">✓</t>
+                                    </span> Sin Manchas Negras
+                                </td>
+                                <td style="font-size: 9px;">
+                                    <span class="checkbox" t-att-class="'checkbox-checked' if doc.no_soft_parts else 'checkbox'">
+                                        <t t-if="doc.no_soft_parts">✓</t>
+                                    </span> Sin Partes Blandas
+                                </td>
+                                <td style="font-size: 9px;">
+                                    <span class="checkbox" t-att-class="'checkbox-checked' if doc.no_visible_fungi else 'checkbox'">
+                                        <t t-if="doc.no_visible_fungi">✓</t>
+                                    </span> Sin Hongos
+                                </td>
+                                <td style="font-size: 9px;">
+                                    <span class="checkbox" t-att-class="'checkbox-checked' if doc.no_pests else 'checkbox'">
+                                        <t t-if="doc.no_pests">✓</t>
+                                    </span> Sin Plagas
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 9px;">
+                                    <span class="checkbox" t-att-class="'checkbox-checked' if doc.packaging_state_ok else 'checkbox'">
+                                        <t t-if="doc.packaging_state_ok">✓</t>
+                                    </span> Empaque OK
+                                </td>
+                                <td style="font-size: 9px;">
+                                    <span class="checkbox" t-att-class="'checkbox-checked' if doc.dirt_level_acceptable else 'checkbox'">
+                                        <t t-if="doc.dirt_level_acceptable">✓</t>
+                                    </span> Suciedad Aceptable
+                                </td>
+                                <td style="font-size: 9px;" colspan="2">
+                                    <span class="checkbox" t-att-class="'checkbox-checked' if doc.no_excess_humidity else 'checkbox'">
+                                        <t t-if="doc.no_excess_humidity">✓</t>
+                                    </span> Sin Exceso de Humedad
+                                </td>
+                            </tr>
+                        </table>
+
+                        <t t-if="doc.quality_observations">
+                            <div style="border: 1px solid #000; padding: 5px; margin-bottom: 15px; font-size: 9px;">
+                                <strong>Observaciones de Calidad:</strong> <span t-field="doc.quality_observations"/>
+                            </div>
+                        </t>
+
+                        <!-- 3. Pesaje -->
+                        <div class="section-title">3. PESAJE INICIAL DEL PRODUCTO</div>
+                        <table class="data-table">
+                            <tr>
+                                <td class="label-cell">Peso Bruto</td>
+                                <td class="value-cell"><span t-field="doc.gross_weight"/> lbs</td>
+                                <td class="label-cell">Peso Empaque</td>
+                                <td class="value-cell"><span t-field="doc.packaging_weight"/> lbs</td>
+                                <td class="label-cell" style="background-color: #64b9b0; color: white;">Peso Neto</td>
+                                <td class="value-cell" style="background-color: #e8f5f3; font-weight: bold;"><span t-field="doc.net_weight"/> lbs</td>
+                            </tr>
+                        </table>
+
+                        <!-- 4. Limpieza Previa -->
+                        <div class="section-title">4. LIMPIEZA PREVIA</div>
+                        <t t-if="doc.pre_cleaning_done">
+                            <table class="data-table">
+                                <tr>
+                                    <td style="width: 25%; text-align: center;">
+                                        <span class="checkbox checkbox-checked">✓</span> Hojas Dañadas Removidas
+                                    </td>
+                                    <td style="width: 25%; text-align: center;">
+                                        <span class="checkbox checkbox-checked">✓</span> Tallos Dañados Removidos
+                                    </td>
+                                    <td style="width: 25%; text-align: center;">
+                                        <span class="checkbox checkbox-checked">✓</span> Tierra Gruesa Removida
+                                    </td>
+                                    <td style="width: 25%; text-align: center;">
+                                        <span class="checkbox checkbox-checked">✓</span> Unidades Descompuestas Removidas
+                                    </td>
+                                </tr>
+                            </table>
+                        </t>
+                        <t t-else="">
+                            <div style="text-align: center; padding: 10px; background-color: #f0f0f0; font-size: 10px;">
+                                No se realizó limpieza previa
+                            </div>
+                        </t>
+
+                        <!-- 5. Lavado -->
+                        <div class="section-title">5. LAVADO DEL PRODUCTO</div>
+                        <t t-if="doc.washing_required">
+                            <table class="data-table">
+                                <tr>
+                                    <td class="label-cell">Hora Inicio</td>
+                                    <td class="value-cell">
+                                        <t t-if="doc.washing_start_time">
+                                            <span t-esc="'{:02d}:{:02d}'.format(int(doc.washing_start_time), int((doc.washing_start_time % 1) * 60))"/>
+                                        </t>
+                                    </td>
+                                    <td class="label-cell">Hora Fin</td>
+                                    <td class="value-cell">
+                                        <t t-if="doc.washing_end_time">
+                                            <span t-esc="'{:02d}:{:02d}'.format(int(doc.washing_end_time), int((doc.washing_end_time % 1) * 60))"/>
+                                        </t>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-cell">Peso Pre-Lavado</td>
+                                    <td class="value-cell"><span t-field="doc.pre_wash_weight"/> lbs</td>
+                                    <td class="label-cell">Peso Post-Lavado</td>
+                                    <td class="value-cell"><span t-field="doc.post_wash_weight"/> lbs</td>
+                                </tr>
+                                <tr>
+                                    <td class="label-cell">Sanitizante Usado</td>
+                                    <td class="value-cell" colspan="3"><span t-field="doc.sanitizer_used"/></td>
+                                </tr>
+                            </table>
+
+                            <!-- 6. Métricas -->
+                            <div class="section-title">6. MÉTRICAS DE CALIDAD</div>
+                            <table class="data-table">
+                                <tr>
+                                    <td class="label-cell">% Merma</td>
+                                    <td class="value-cell" style="font-weight: bold;">
+                                        <span t-esc="'{:.2f}'.format(doc.waste_percentage)"/>%
+                                    </td>
+                                    <td class="label-cell">% Rendimiento Final</td>
+                                    <td class="value-cell" style="font-weight: bold; background-color: #e8f5f3;">
+                                        <span t-esc="'{:.2f}'.format(doc.yield_percentage)"/>%
+                                    </td>
+                                </tr>
+                            </table>
+                        </t>
+                        <t t-else="">
+                            <div style="text-align: center; padding: 10px; background-color: #f0f0f0; font-size: 10px;">
+                                No se realizó lavado del producto
+                            </div>
+                        </t>
+
+                        <!-- 7. Almacenamiento -->
+                        <div class="section-title">7. ALMACENAMIENTO REFRIGERADO</div>
+                        <table class="data-table">
+                            <tr>
+                                <td class="label-cell">Temperatura</td>
+                                <td class="value-cell"><span t-field="doc.storage_temperature"/>°C</td>
+                                <td class="label-cell">Ubicación</td>
+                                <td class="value-cell"><span t-field="doc.storage_location"/></td>
+                                <td class="label-cell">FIFO</td>
+                                <td class="value-cell" style="text-align: center;">
+                                    <span class="checkbox" t-att-class="'checkbox-checked' if doc.fifo_applied else 'checkbox'">
+                                        <t t-if="doc.fifo_applied">✓</t>
+                                    </span>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Signatures Section -->
+                        <table class="signature-table">
+                            <tr>
+                                <td class="signature-header">
+                                    Encargado de Recepción
+                                </td>
+                                <td class="signature-header">
+                                    Control de Calidad
+                                </td>
+                                <td class="signature-header">
+                                    Supervisor de Planta
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="height: 80px; vertical-align: bottom;">
+                                    <t t-if="doc.reception_signature">
+                                        <img t-att-src="image_data_uri(doc.reception_signature)" 
+                                             style="max-width: 150px; max-height: 60px;"/>
+                                    </t>
+                                    <div style="border-top: 1px solid #000; margin-top: 40px; text-align: center; padding-top: 5px; font-size: 9px;">
+                                        <strong><span t-field="doc.reception_responsible_id.name"/></strong><br/>
+                                        Fecha: <span t-field="doc.reception_date"/>
+                                    </div>
+                                </td>
+                                <td style="height: 80px; vertical-align: bottom;">
+                                    <t t-if="doc.quality_signature">
+                                        <img t-att-src="image_data_uri(doc.quality_signature)" 
+                                             style="max-width: 150px; max-height: 60px;"/>
+                                    </t>
+                                    <div style="border-top: 1px solid #000; margin-top: 40px; text-align: center; padding-top: 5px; font-size: 9px;">
+                                        <strong><span t-field="doc.quality_responsible_id.name"/></strong><br/>
+                                        Fecha: <span t-field="doc.reception_date"/>
+                                    </div>
+                                </td>
+                                <td style="height: 80px; vertical-align: bottom;">
+                                    <t t-if="doc.supervisor_signature">
+                                        <img t-att-src="image_data_uri(doc.supervisor_signature)" 
+                                             style="max-width: 150px; max-height: 60px;"/>
+                                    </t>
+                                    <div style="border-top: 1px solid #000; margin-top: 40px; text-align: center; padding-top: 5px; font-size: 9px;">
+                                        <strong><span t-field="doc.supervisor_id.name"/></strong><br/>
+                                        Fecha: <span t-field="doc.reception_date"/>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- General Notes -->
+                        <t t-if="doc.notes">
+                            <div style="margin-top: 20px; border: 1px solid #000; padding: 10px;">
+                                <strong>Observaciones Generales:</strong><br/>
+                                <span t-field="doc.notes"/>
+                            </div>
+                        </t>
+
+                        <!-- Footer -->
+                        <div style="margin-top: 30px; font-size: 9px; text-align: center; border-top: 1px solid #ccc; padding-top: 10px;">
+                            <strong>Control N°: <span t-field="doc.name"/></strong> | 
+                            Fecha de Creación: <span t-field="doc.create_date" t-options="{'widget': 'datetime'}"/> | 
+                            Estado: <span t-field="doc.state"/><br/>
+                            <span style="font-size: 8px; color: #666;">
+                                Documento confidencial propiedad de Alimentos Deshidratados y Congelados, S.A. | KANI-PO-511 v01
+                            </span>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>
